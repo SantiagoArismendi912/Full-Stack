@@ -1,0 +1,89 @@
+stily.css
+body {
+    font-family: sans-serif;
+    margin: 20px;
+    background-color: #788577;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Para que el contenido empiece desde arriba */
+    min-height: 100vh;
+}
+
+.container {
+    background-color: rgb(204, 204, 202);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(19, 18, 18, 0.1);
+    padding: 30px;
+    width: 80%;
+    max-width: 900px;
+    display: flex;
+    flex-wrap: wrap; /* Para que las secciones se apilen en pantallas chicas */
+    gap: 20px; /* Espacio entre las secciones */
+}
+
+.profile {
+    flex-basis: 100%; /* Ocupa todo el ancho al principio */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.section {
+    flex-basis: calc(50% - 10px); /* Dos columnas en pantallas medianas y grandes */
+    padding: 15px;
+    border-bottom: 1px solid #1c0a69;
+}
+
+.section:last-child {
+    border-bottom: none;
+}
+
+h2 {
+    color: #1b9425;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+h3 {
+    color: #555;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+p {
+    color: #777;
+    margin-bottom: 8px;
+}
+
+ul {
+    list-style: disc;
+    padding-left: 20px;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+/* Para pantallas más chicas (celulares) */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+        flex-direction: column; /* Una columna en celulares */
+        flex-wrap: nowrap;
+    }
+
+    .section {
+        flex-basis: 100%; /* Ocupa todo el ancho en celulares */
+        border-bottom: 1px solid #eee;
+    }
+
+    .section:last-child {
+        border-bottom: none;
+    }
+}
