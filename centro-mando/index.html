@@ -1,0 +1,515 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Centro de Mando Jornexa</title>
+<meta name="description" content="Demo interactiva de Jornexa · Gestión Conectada: una operación de limpieza y mantenimiento que detecta, propone y actúa con aprobación humana. Diseñado por DVelaris.">
+<meta name="theme-color" content="#072E73">
+<meta property="og:title" content="Centro de Mando Jornexa">
+<meta property="og:description" content="Datos → contexto → decisión → acción. Una demo de Jornexa por DVelaris.">
+<link rel="icon" href="assets/jornexa-logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+<style>
+  :root {
+    --jx-blue: #0A3D91; --jx-navy: #072E73; --jx-cyan: #21D4E8; --jx-teal: #0B6075; --jx-teal-deep: #063C4B;
+    --jx-mint: #9ADBD4; --jx-ink: #1D1F24; --jx-bg: #EDF5F5; --jx-line: #D9E7F1; --jx-muted: #5E7378;
+    --ok: #2E8B57; --warn: #D9822B; --bad: #C0392B;
+    --vidrio: rgba(255, 255, 255, .84); --vidrio-borde: rgba(255, 255, 255, .9);
+    --sombra: 0 14px 36px rgba(6, 60, 75, .16); --radio: 16px;
+    --kpi: #072E73; --superficie: rgba(237, 245, 245, .75); --tarjeta: rgba(255, 255, 255, .55); --boton-suave: rgba(237, 245, 245, .9);
+    --panel-form: rgba(255, 255, 255, .97); --campo: #FFFFFF;
+    --fuente: 'Quicksand', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: light;
+  }
+  /* Modo claro por defecto (el logotipo oficial tiene texto oscuro); el oscuro se activa con el botón ◐. */
+  :root[data-theme="dark"] {
+    --kpi: #FFFFFF; --superficie: rgba(255, 255, 255, .08); --tarjeta: rgba(255, 255, 255, .06); --boton-suave: rgba(255, 255, 255, .1);
+    --panel-form: rgba(6, 60, 75, .97); --campo: rgba(255, 255, 255, .06);
+    --jx-bg: #052F3B; --jx-ink: #EAF6F7; --jx-muted: #9DB9BE; --jx-line: rgba(154, 219, 212, .22);
+    --vidrio: rgba(6, 60, 75, .84); --vidrio-borde: rgba(154, 219, 212, .18); color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font-family: var(--fuente); color: var(--jx-ink); background: var(--jx-bg); overflow: hidden; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; cursor: pointer; color: inherit; }
+  button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--jx-cyan); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+  .solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Escena */
+  #escena { position: fixed; inset: 0; z-index: 0; touch-action: none; }
+  #escena canvas { display: block; width: 100%; height: 100%; }
+  .etiquetas { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .etiqueta { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; font-size: 11px; font-weight: 700; color: var(--jx-navy); background: #fff; border: 1px solid var(--jx-line); border-radius: 999px; padding: 3px 10px; box-shadow: 0 4px 10px rgba(6, 60, 75, .12); }
+  #respaldo3d { position: fixed; inset: 0; z-index: 0; display: none; background: url(assets/escena-respaldo.png) center / cover no-repeat, linear-gradient(160deg, #EDF5F5 0%, #CFEAE7 55%, #9ADBD4 100%); }
+  body.sin-3d #respaldo3d { display: block; }
+  body.sin-3d #escena { display: none; }
+
+  .vidrio { background: var(--vidrio); border: 1px solid var(--vidrio-borde); border-radius: var(--radio); box-shadow: var(--sombra); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+
+  /* Barra superior */
+  .barra { position: fixed; top: 16px; left: 16px; right: 16px; display: flex; align-items: center; gap: 14px; padding: 8px 12px 8px 16px; z-index: 5; }
+  .barra .logo { height: 38px; width: auto; }
+  .empresa { font-size: 12px; color: var(--jx-muted); line-height: 1.2; border-left: 1px solid var(--jx-line); padding-left: 12px; }
+  .empresa b { display: block; color: var(--jx-ink); font-size: 13px; }
+  .buscar { flex: 1; max-width: 360px; margin-left: auto; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; background: var(--superficie); border: 1px solid var(--jx-line); color: var(--jx-muted); font-size: 13px; }
+  .reloj { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--jx-navy); color: #fff; font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .reloj i { width: 8px; height: 8px; border-radius: 50%; background: var(--jx-cyan); box-shadow: 0 0 0 4px rgba(33, 212, 232, .25); }
+  .modo { display: flex; padding: 4px; border-radius: 999px; background: var(--boton-suave); border: 1px solid var(--jx-line); }
+  .modo button { white-space: nowrap; border: 0; background: transparent; padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 13px; color: var(--jx-muted); }
+  .modo button[aria-pressed="true"] { background: var(--jx-blue); color: #fff; }
+  .tema { border: 1px solid var(--jx-line); background: var(--boton-suave); width: 34px; height: 34px; border-radius: 50%; font-weight: 700; color: var(--jx-muted); }
+
+  /* Indicadores */
+  .kpis { position: fixed; top: 92px; left: 16px; display: grid; grid-template-columns: repeat(4, 150px); gap: 12px; z-index: 4; }
+  .kpi { padding: 12px 14px; }
+  .kpi span { font-size: 12px; color: var(--jx-muted); font-weight: 600; }
+  .kpi b { display: block; font-size: 28px; line-height: 1.1; margin-top: 4px; color: var(--kpi); transition: color .3s; }
+  .kpi small { font-size: 11px; font-weight: 700; color: var(--jx-muted); }
+  .kpi.ok small { color: var(--ok); } .kpi.warn b, .kpi.warn small { color: var(--warn); } .kpi.bad b, .kpi.bad small { color: var(--bad); }
+  .kpi b.cambio { animation: latido .6s ease; }
+  @keyframes latido { 40% { transform: scale(1.15); } }
+  :root[data-theme="dark"] .barra .logo, :root[data-theme="dark"] .pie img { background: #fff; border-radius: 10px; padding: 3px 6px; }
+
+  /* Copiloto */
+  .copiloto { position: fixed; left: 16px; top: 196px; width: 360px; max-height: calc(100vh - 360px); display: flex; flex-direction: column; padding: 14px; z-index: 4; }
+  .copiloto > header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .chispa { flex: none; width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--jx-blue), var(--jx-cyan)); font-weight: 700; }
+  .copiloto h2 { margin: 0; font-size: 15px; } .copiloto > header p { margin: 0; font-size: 11px; color: var(--jx-muted); }
+  .contador { flex: none; white-space: nowrap; margin-left: auto; font-size: 11px; font-weight: 700; background: var(--jx-navy); color: #fff; border-radius: 999px; padding: 2px 8px; }
+  #copilotoLista { overflow-y: auto; min-height: 0; }
+  .propuesta { border: 1px solid var(--jx-line); border-left: 4px solid var(--warn); border-radius: 12px; padding: 10px 12px; margin-top: 8px; background: var(--tarjeta); animation: entrar .35s ease; }
+  .propuesta.incidencia { border-left-color: var(--bad); } .propuesta.insumo { border-left-color: var(--jx-cyan); } .propuesta.comercial { border-left-color: var(--jx-blue); }
+  .propuesta h3 { margin: 0 0 3px; font-size: 13px; } .propuesta p { margin: 0 0 8px; font-size: 12px; color: var(--jx-muted); }
+  .propuesta .acciones { display: flex; gap: 6px; flex-wrap: wrap; }
+  .vacio { margin: 10px 0 2px; font-size: 12px; color: var(--jx-muted); }
+  @keyframes entrar { from { opacity: 0; transform: translateY(6px); } }
+  .btn { border: 0; border-radius: 999px; padding: 7px 13px; font-size: 12px; font-weight: 700; background: var(--jx-blue); color: #fff; transition: transform .15s, box-shadow .15s; }
+  .btn.sec { background: transparent; color: var(--jx-blue); border: 1px solid var(--jx-line); }
+  :root[data-theme="dark"] .btn.sec { color: var(--jx-cyan); }
+  .presionado { transform: scale(.94); box-shadow: 0 0 0 4px rgba(33, 212, 232, .4); }
+
+  /* Chat */
+  .chat { margin-top: 10px; border-top: 1px solid var(--jx-line); padding-top: 8px; }
+  .chat summary { cursor: pointer; font-size: 12px; font-weight: 700; color: var(--jx-blue); list-style: none; }
+  :root[data-theme="dark"] .chat summary { color: var(--jx-cyan); }
+  .chat summary::-webkit-details-marker { display: none; }
+  #chatMensajes { max-height: 150px; overflow-y: auto; margin: 8px 0; display: flex; flex-direction: column; gap: 6px; }
+  .msg { font-size: 12px; padding: 7px 10px; border-radius: 12px; max-width: 92%; background: var(--superficie); }
+  .msg.yo { align-self: flex-end; background: var(--jx-blue); color: #fff; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .chip { border: 1px solid var(--jx-line); background: var(--tarjeta); border-radius: 999px; padding: 4px 10px; font-size: 11px; font-weight: 600; }
+  #chatForm { display: flex; gap: 6px; }
+  #chatEntrada { flex: 1; min-width: 0; border: 1px solid var(--jx-line); border-radius: 999px; padding: 7px 12px; font: inherit; font-size: 12px; background: var(--superficie); color: var(--jx-ink); }
+
+  /* Panel de sede */
+  .sede { position: fixed; right: 16px; top: 92px; width: 320px; max-height: calc(100vh - 250px); overflow-y: auto; padding: 16px; z-index: 4; animation: entrar .3s ease; }
+  .sede .cab { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+  .sede h2 { margin: 2px 0 0; font-size: 18px; } .sede .tipo { font-size: 11px; color: var(--jx-muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .cerrar { flex: none; border: 0; background: var(--boton-suave); width: 28px; height: 28px; border-radius: 50%; color: var(--jx-muted); }
+  .estado { display: inline-flex; align-items: center; gap: 6px; margin: 10px 0 12px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .estado.reposo { background: rgba(154, 219, 212, .3); color: var(--jx-teal); } .estado.activo { background: rgba(46, 139, 87, .14); color: var(--ok); }
+  .estado.alerta { background: rgba(217, 130, 43, .14); color: var(--warn); } .estado.incidencia { background: rgba(192, 57, 43, .12); color: var(--bad); }
+  .estado.obra { background: var(--superficie); color: var(--jx-muted); }
+  .grilla { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+  .grilla div { background: var(--superficie); border-radius: 10px; padding: 8px 10px; font-size: 11px; color: var(--jx-muted); font-weight: 600; }
+  .grilla b { display: block; font-size: 16px; color: var(--jx-ink); }
+  .sede h3 { font-size: 12px; margin: 12px 0 6px; color: var(--jx-muted); text-transform: uppercase; letter-spacing: .06em; }
+  .fila { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--jx-line); }
+  .fila small { color: var(--jx-muted); }
+  .fila em { flex: none; font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: rgba(46, 139, 87, .14); color: var(--ok); }
+  .fila em.warn { background: rgba(217, 130, 43, .14); color: var(--warn); } .fila em.bad { background: rgba(192, 57, 43, .12); color: var(--bad); }
+  .fila em.neutro { background: var(--superficie); color: var(--jx-muted); }
+  .barra-stock { flex: none; height: 6px; border-radius: 6px; background: var(--jx-line); overflow: hidden; width: 90px; } .barra-stock i { display: block; height: 100%; background: var(--jx-teal); transition: width .6s; }
+  .barra-stock.bajo i { background: var(--bad); }
+
+
+  /* Control de reproducción dentro de la línea de tiempo */
+  .transporte { display: flex; align-items: center; gap: 8px; margin: 8px 0 2px; }
+  .tr-btn { flex: none; border: 1px solid var(--jx-line); background: var(--boton-suave); color: var(--jx-ink); min-width: 38px; height: 32px; padding: 0 10px; border-radius: 999px; font-weight: 700; font-size: 12px; line-height: 1; transition: transform .15s, background .15s; }
+  .tr-btn:hover { background: var(--superficie); }
+  .tr-btn:active { transform: scale(.94); }
+  .tr-play { width: 44px; height: 36px; background: var(--jx-blue); color: #fff; border-color: transparent; font-size: 14px; }
+  .tr-play:hover { background: var(--jx-navy); }
+  .tr-vel { min-width: 46px; color: var(--jx-blue); }
+  :root[data-theme="dark"] .tr-vel { color: var(--jx-cyan); }
+  .tr-pista { position: relative; flex: 1; min-width: 80px; padding-bottom: 14px; }
+  .tr-pista input[type="range"] { width: 100%; margin: 0; accent-color: var(--jx-blue); cursor: pointer; }
+  .tr-actos { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; pointer-events: none; }
+  .tr-actos span { position: absolute; transform: translateX(-2px); font-size: 10px; font-weight: 700; color: var(--jx-muted); white-space: nowrap; }
+  .tr-actos span::before { content: ''; position: absolute; left: 0; top: -4px; width: 2px; height: 4px; background: var(--jx-line); }
+  .tr-tiempo { flex: none; min-width: 84px; text-align: right; font-size: 12px; font-weight: 700; color: var(--jx-muted); font-variant-numeric: tabular-nums; }
+  body.modo-video .transporte { display: none !important; }
+
+  /* Rótulo, línea de tiempo y pie */
+  .rotulo { position: fixed; left: 50%; bottom: 236px; transform: translateX(-50%); padding: 10px 18px; font-weight: 700; font-size: 15px; color: #fff; background: rgba(7, 46, 115, .9); border-radius: 999px; box-shadow: var(--sombra); white-space: nowrap; z-index: 4; transition: opacity .35s; }
+  .rotulo span { color: var(--jx-cyan); margin-right: 6px; }
+  .rotulo.oculto { opacity: 0; }
+  .controles-historia { position: fixed; left: 50%; bottom: 190px; transform: translateX(-50%); display: flex; gap: 8px; z-index: 4; }
+  .tiempo { position: fixed; left: 16px; right: 16px; bottom: 44px; padding: 10px 18px 12px; z-index: 4; }
+  .tiempo .eje { position: relative; height: 26px; margin-top: 6px; }
+  .tiempo .eje::before { content: ''; position: absolute; left: 0; right: 0; top: 12px; height: 3px; border-radius: 3px; background: var(--jx-line); }
+  .tiempo .avance { position: absolute; left: 0; top: 12px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--jx-blue), var(--jx-cyan)); width: 0; transition: width .8s; }
+  .tiempo .punto { position: absolute; top: 6px; width: 15px; height: 15px; margin-left: -7px; padding: 0; border-radius: 50%; border: 3px solid #fff; background: var(--ok); box-shadow: 0 2px 6px rgba(6, 60, 75, .3); }
+  .punto.warn { background: var(--warn); } .punto.bad { background: var(--bad); } .punto.info { background: var(--jx-cyan); } .punto.hecho { background: var(--jx-navy); }
+  .tiempo .horas { display: flex; justify-content: space-between; font-size: 11px; color: var(--jx-muted); font-weight: 600; }
+  .tiempo .tit { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
+  .tiempo .tit span { color: var(--jx-muted); font-weight: 600; }
+  .pie { position: fixed; left: 16px; right: 16px; bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; color: var(--jx-muted); z-index: 4; }
+  .pie a { color: var(--jx-blue); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+  :root[data-theme="dark"] .pie a { color: var(--jx-cyan); }
+  .pie img { height: 24px; }
+  .cta { background: var(--jx-blue); color: #fff !important; padding: 6px 14px; border-radius: 999px; }
+
+  /* Cierre de la historia */
+  .cierre { position: fixed; inset: 0; z-index: 8; display: grid; place-items: center; background: rgba(6, 60, 75, .35); padding: 16px; }
+  .cierre .tarjeta { max-width: 480px; padding: 26px; text-align: center; }
+  .cierre h2 { margin: 0 0 8px; font-size: 22px; color: var(--kpi); }
+  .cierre p { margin: 0 0 18px; color: var(--jx-muted); font-size: 14px; }
+  .cierre .flujo { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; font-size: 12px; font-weight: 700; }
+  .cierre .flujo span { background: var(--superficie); padding: 5px 10px; border-radius: 999px; }
+  .cierre .acciones { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .cierre .btn, .cierre .cta { font-size: 14px; padding: 10px 18px; text-decoration: none; font-weight: 700; }
+
+  .cursor { position: fixed; left: 0; top: 0; z-index: 9; width: 26px; height: 26px; pointer-events: none; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .3)); transition: transform .7s cubic-bezier(.4, 0, .2, 1), opacity .3s; opacity: 0; }
+  .cursor.visible { opacity: 1; }
+  .aviso { position: fixed; left: 50%; top: 84px; transform: translateX(-50%); z-index: 6; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px; background: var(--jx-navy); color: #fff; box-shadow: var(--sombra); animation: entrar .3s ease; }
+
+  /* Formulario «Agenda una demo» */
+  .formulario { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px; background: rgba(6, 60, 75, .42); overflow-y: auto; }
+  .panel-form { width: min(640px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; padding: 24px 26px; animation: entrar .3s ease; background: var(--panel-form); }
+  .form-cab { display: flex; justify-content: space-between; gap: 12px; align-items: start; margin-bottom: 8px; }
+  .form-eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--jx-teal); }
+  :root[data-theme="dark"] .form-eyebrow { color: var(--jx-mint); }
+  .panel-form h2 { margin: 0; font-size: 22px; color: var(--kpi); text-wrap: balance; }
+  .form-intro { margin: 6px 0 0; font-size: 13px; color: var(--jx-muted); }
+  #formSolicitud { display: grid; gap: 14px; }
+  .bloque { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .bloque legend { padding: 0; margin-bottom: 10px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--jx-muted); }
+  .bloque + .bloque { border-top: 1px solid var(--jx-line); padding-top: 14px; }
+  .fila-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .campo { display: grid; gap: 5px; min-width: 0; }
+  .campo label, .rotulo-campo { font-size: 13px; font-weight: 700; }
+  .opc { font-weight: 500; color: var(--jx-muted); }
+  .req { color: var(--bad); }
+  .campo input:not([type="radio"]):not([type="checkbox"]), .campo select, .campo textarea {
+    width: 100%; font: inherit; font-size: 14px; color: var(--jx-ink); background: var(--campo); border: 1px solid var(--jx-line); border-radius: 10px; padding: 9px 12px;
+  }
+  .campo textarea { resize: vertical; }
+  .campo input:focus-visible, .campo select:focus-visible, .campo textarea:focus-visible { outline: 3px solid var(--jx-cyan); outline-offset: 1px; border-color: transparent; }
+  [aria-invalid="true"] { border-color: var(--bad) !important; }
+  .error-campo { margin: 0; min-height: 0; font-size: 12px; font-weight: 600; color: var(--bad); }
+  .error-campo:empty { display: none; }
+  .chips-form { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips-form label { position: relative; }
+  .chips-form input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .chips-form span { display: block; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--jx-line); background: var(--campo); font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s, color .15s; }
+  .chips-form input:checked + span { background: var(--jx-blue); border-color: var(--jx-blue); color: #fff; }
+  .chips-form input:focus-visible + span { outline: 3px solid var(--jx-cyan); outline-offset: 2px; }
+  .chips-form[aria-describedby] input[aria-invalid="true"] + span { border-color: var(--bad); }
+  .consentimiento { display: flex; gap: 10px; align-items: start; font-weight: 500 !important; font-size: 13px; color: var(--jx-muted); cursor: pointer; }
+  .consentimiento input { margin-top: 2px; width: 18px; height: 18px; accent-color: var(--jx-blue); flex: none; }
+  .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .estado-envio { margin: 0; font-size: 13px; font-weight: 600; padding: 10px 12px; border-radius: 10px; background: var(--superficie); }
+  .estado-envio.es-aviso { color: var(--warn); background: rgba(217, 130, 43, .12); }
+  .estado-envio.es-error { color: var(--bad); background: rgba(192, 57, 43, .1); }
+  .form-acciones { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .nota-req { margin: 0; font-size: 12px; color: var(--jx-muted); }
+  .btn-grande { font-size: 14px; padding: 11px 22px; }
+  .btn:disabled { opacity: .6; cursor: progress; }
+  .gracias { text-align: center; padding: 20px 4px 6px; display: grid; justify-items: center; gap: 10px; }
+  .gracias-sello { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--jx-blue), var(--jx-cyan)); }
+  .gracias h3 { margin: 0; font-size: 20px; color: var(--kpi); }
+  .gracias p { margin: 0 0 6px; max-width: 42ch; color: var(--jx-muted); font-size: 14px; }
+  @media (max-width: 767px) {
+    .formulario { padding: 0; place-items: end stretch; }
+    .panel-form { width: 100%; max-height: 92vh; border-radius: 20px 20px 0 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); }
+    .panel-form h2 { font-size: 19px; }
+    .form-acciones .btn-grande { flex: 1; }
+  }
+
+  /* Captura de la imagen de respaldo: solo la ciudad (parámetro ?solo-escena=1) */
+  body.solo-escena > :not(#escena):not(#respaldo3d) { display: none !important; }
+
+  /* Modo video: sin controles */
+  body.modo-video .buscar, body.modo-video .chat, body.modo-video .controles-historia, body.modo-video .modo, body.modo-video .tema, body.modo-video .cerrar { display: none !important; }
+  body.modo-video, body.modo-video * { cursor: none !important; }
+
+  /* Celular */
+  @media (max-width: 767px) {
+    .barra { top: 12px; left: 12px; right: 12px; gap: 8px; padding: 6px 8px 6px 12px; }
+    .barra .logo { height: 28px; } .empresa, .buscar, .tema { display: none; }
+    .reloj { margin-left: auto; padding: 6px 10px; font-size: 12px; } .reloj .largo { display: none; }
+    .modo button { padding: 6px 9px; font-size: 11px; }
+    .kpis { top: 66px; left: 0; right: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 16px 6px; gap: 8px; scrollbar-width: none; }
+    .kpis::-webkit-scrollbar { display: none; }
+    .kpi { flex: 0 0 120px; scroll-snap-align: start; padding: 8px 12px; } .kpi b { font-size: 22px; } .kpi small { display: none; } .kpi span { white-space: nowrap; font-size: 11px; }
+    .copiloto { top: auto; bottom: 64px; left: 12px; right: 12px; width: auto; max-height: 40vh; padding: 10px 12px; }
+    .copiloto .propuesta:nth-of-type(n+2) { display: none; }
+    .chat { display: none; }
+    .sede { top: auto; bottom: 0; left: 0; right: 0; width: auto; border-radius: 20px 20px 0 0; max-height: 96px; overflow: hidden; padding: 8px 16px 16px; transition: max-height .3s; }
+    .sede.expandida { max-height: 62vh; overflow-y: auto; }
+    .sede::before { content: ''; display: block; width: 40px; height: 4px; border-radius: 4px; background: var(--jx-line); margin: 0 auto 8px; }
+    .sede:not(.expandida) .detalle { display: none; }
+    .sede .estado { margin: 6px 0 0; }
+    .rotulo { bottom: auto; top: 160px; font-size: 12px; white-space: normal; text-align: center; width: calc(100% - 32px); border-radius: 14px; }
+    .controles-historia { bottom: auto; top: 214px; }
+    .pie .legal { display: none; }
+    .tiempo { left: 12px; right: 12px; bottom: auto; top: 258px; padding: 6px 10px; }
+    .tiempo .tit, .tiempo .eje, .tiempo .horas { display: none; }
+    .transporte { margin: 0; gap: 5px; }
+    .tr-btn { min-width: 32px; height: 30px; padding: 0 7px; }
+    #trAtras, #trAdelante, .tr-tiempo { display: none; }
+    .pie { bottom: 12px; left: 12px; right: 12px; justify-content: center; }
+    .pie .cta { flex: 1; justify-content: center; padding: 10px 14px; }
+    .pie a:not(.cta) { display: none; }
+    .cursor { display: none; }
+    body.panel-abierto .copiloto, body.panel-abierto .pie { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+<div id="escena" aria-label="Ciudad isométrica con la base de Brillo Total Servicios y sus sedes de clientes. Selecciona una sede para ver su detalle." role="img"></div>
+<div id="respaldo3d" aria-hidden="true"></div>
+
+<header class="barra vidrio">
+  <img class="logo" src="assets/jornexa-logo.svg" alt="Jornexa · Gestión Conectada" width="152" height="38">
+  <div class="empresa"><b>Brillo Total Servicios</b>Limpieza y mantenimiento · demo</div>
+  <div class="buscar" aria-hidden="true">⌕ Buscar sede, persona, pedido…</div>
+  <div class="reloj" aria-live="off"><i aria-hidden="true"></i><span id="reloj">06:00</span><span class="largo"> · Jornada en curso</span></div>
+  <div class="modo" role="group" aria-label="Modo de la demo">
+    <button id="btnHistoria" type="button" aria-pressed="false">▶ Historia</button>
+    <button id="btnExplorar" type="button" aria-pressed="true">Explorar</button>
+  </div>
+  <button class="tema" id="btnTema" type="button" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro / oscuro">◐</button>
+</header>
+
+<section class="kpis" aria-label="Indicadores de la operación">
+  <div class="kpi vidrio ok"><span>Jornadas activas</span><b id="kpiJornadas">0</b><small id="kpiJornadasNota">de 6 planificadas</small></div>
+  <div class="kpi vidrio ok"><span>Cumplimiento</span><b id="kpiCumplimiento">0 %</b><small>Entradas registradas</small></div>
+  <div class="kpi vidrio" id="kpiIncidenciasCaja"><span>Incidencias abiertas</span><b id="kpiIncidencias">0</b><small id="kpiIncidenciasNota">Sin novedades</small></div>
+  <div class="kpi vidrio" id="kpiInsumosCaja"><span>Insumos críticos</span><b id="kpiInsumos">0</b><small id="kpiInsumosNota">Stock en orden</small></div>
+</section>
+
+<aside class="copiloto vidrio" id="copiloto" aria-label="Copiloto Jornexa IA">
+  <header>
+    <div class="chispa" aria-hidden="true">✦</div>
+    <div><h2>Jornexa IA · copiloto</h2><p>Detecta, explica y propone. Tú decides.</p></div>
+    <span class="contador" id="copilotoContador" hidden>0</span>
+  </header>
+  <div id="copilotoLista" aria-live="polite"></div>
+  <details class="chat">
+    <summary>✦ Pregúntale a Jornexa IA</summary>
+    <div id="chatMensajes" aria-live="polite"><div class="msg">Hola. Puedo orientarte sobre jornadas, geocerca, incidencias, pedidos, clientes, CRM, gastos, reportes y auditoría.</div></div>
+    <div class="chips">
+      <button class="chip" type="button" data-pregunta="¿Cómo marco mi entrada?">¿Cómo marco mi entrada?</button>
+      <button class="chip" type="button" data-pregunta="¿Cómo registro una incidencia?">¿Cómo registro una incidencia?</button>
+      <button class="chip" type="button" data-pregunta="¿Cómo pido materiales?">¿Cómo pido materiales?</button>
+      <button class="chip" type="button" data-pregunta="¿Qué ve el portal del cliente?">¿Qué ve el portal del cliente?</button>
+    </div>
+    <form id="chatForm" autocomplete="off">
+      <label class="solo-lector" for="chatEntrada">Escribe tu pregunta</label>
+      <input id="chatEntrada" maxlength="200" placeholder="Escribe tu pregunta…">
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </details>
+</aside>
+
+<aside class="sede vidrio" id="panelSede" aria-label="Detalle de la sede" hidden>
+  <div class="cab">
+    <div><div class="tipo" id="sedeTipo"></div><h2 id="sedeNombre"></h2></div>
+    <button class="cerrar" id="cerrarSede" type="button" aria-label="Cerrar detalle de la sede">✕</button>
+  </div>
+  <div id="panelSedeContenido"></div>
+</aside>
+
+<div class="rotulo oculto" id="rotulo" role="status" aria-live="polite"></div>
+<div class="controles-historia">
+  <button class="btn sec vidrio" id="btnSiguienteActo" type="button" hidden>Siguiente acto ›</button>
+  <button class="btn sec vidrio" id="btnSaltar" type="button" hidden>Saltar historia ››</button>
+</div>
+
+<section class="tiempo vidrio" aria-label="Línea de tiempo del día">
+  <div class="tit">Línea de tiempo · hoy <span>06:00 – 22:00</span></div>
+  <div class="transporte" id="transporte" role="group" aria-label="Control de la reproducción de la demo">
+    <button class="tr-btn" id="trInicio" type="button" aria-label="Volver al inicio" title="Volver al inicio">⏮</button>
+    <button class="tr-btn" id="trAtras" type="button" aria-label="Retroceder 5 segundos" title="Retroceder 5 s (←)">−5 s</button>
+    <button class="tr-btn tr-play" id="trPlay" type="button" aria-label="Reproducir" title="Pausar / reproducir (espacio)">▶</button>
+    <button class="tr-btn" id="trAdelante" type="button" aria-label="Adelantar 5 segundos" title="Adelantar 5 s (→)">+5 s</button>
+    <button class="tr-btn tr-vel" id="trVel" type="button" aria-label="Velocidad de reproducción: 1x" title="Velocidad">1×</button>
+    <div class="tr-pista">
+      <input type="range" id="trBarra" min="0" max="70000" step="100" value="0" aria-label="Posición en la historia">
+      <div class="tr-actos" id="trActos" aria-hidden="true"></div>
+    </div>
+    <span class="tr-tiempo" id="trTiempo" aria-live="off">0:00 / 1:10</span>
+  </div>
+  <div class="eje" id="lineaTiempo"><div class="avance" id="avance"></div></div>
+  <div class="horas" aria-hidden="true"><span>06:00</span><span>10:00</span><span>14:00</span><span>18:00</span><span>22:00</span></div>
+</section>
+
+<footer class="pie">
+  <a href="https://dvelaris.com" target="_blank" rel="noopener"><img src="assets/dvelaris-logo.png" alt="DVelaris" height="24">Diseñado por DVelaris — Desarrollos Velaris IA</a>
+  <span class="legal">Datos ficticios · demo sin conexión a sistemas reales</span>
+  <a class="cta" href="#contacto">Agenda una demo con DVelaris</a>
+</footer>
+
+<div class="cierre" id="cierre" hidden>
+  <div class="tarjeta vidrio" role="dialog" aria-modal="true" aria-labelledby="cierreTitulo">
+    <h2 id="cierreTitulo">Así trabaja Jornexa</h2>
+    <p>Software que entiende lo que está pasando, propone qué hacer y deja la decisión a las personas.</p>
+    <div class="flujo"><span>Datos</span><span>→ Contexto</span><span>→ Decisión</span><span>→ Acción</span></div>
+    <div class="acciones">
+      <button class="btn sec" id="btnCierreExplorar" type="button">Ahora explora tú</button>
+      <a class="cta" id="ctaCierre" href="#contacto">Agenda una demo con DVelaris</a>
+    </div>
+  </div>
+</div>
+
+<div class="formulario" id="formulario" hidden>
+  <section class="panel-form vidrio" role="dialog" aria-modal="true" aria-labelledby="formTitulo">
+    <header class="form-cab">
+      <div>
+        <p class="form-eyebrow">Jornexa · Gestión Conectada</p>
+        <h2 id="formTitulo">Agenda una demo con DVelaris</h2>
+        <p class="form-intro">Te mostramos Jornexa con la operación de tu empresa. Toma menos de un minuto.</p>
+      </div>
+      <button class="cerrar" id="formCerrar" type="button" aria-label="Cerrar formulario">✕</button>
+    </header>
+
+    <form id="formSolicitud" novalidate>
+      <fieldset class="bloque">
+        <legend>Sobre ti</legend>
+        <div class="campo">
+          <label for="f-nombre">Nombre y apellido <span class="req" aria-hidden="true">*</span></label>
+          <input id="f-nombre" name="nombre" autocomplete="name" maxlength="80" required aria-describedby="e-nombre">
+          <p class="error-campo" id="e-nombre" aria-live="polite"></p>
+        </div>
+        <div class="campo">
+          <span class="rotulo-campo" id="l-organizacion">¿Dónde trabajas? <span class="req" aria-hidden="true">*</span></span>
+          <div class="chips-form" role="radiogroup" aria-labelledby="l-organizacion" aria-describedby="e-organizacion">
+            <label><input type="radio" name="organizacion" id="f-organizacion" value="independiente"><span>Independiente</span></label>
+            <label><input type="radio" name="organizacion" value="pyme"><span>Pyme</span></label>
+            <label><input type="radio" name="organizacion" value="empresa"><span>Empresa mediana o grande</span></label>
+            <label><input type="radio" name="organizacion" value="otra"><span>Otra</span></label>
+          </div>
+          <p class="error-campo" id="e-organizacion" aria-live="polite"></p>
+        </div>
+        <div class="campo" id="g-organizacionOtra" hidden>
+          <label for="f-organizacionOtra">¿Qué tipo de organización?</label>
+          <input id="f-organizacionOtra" maxlength="60" placeholder="Cooperativa, ONG, organismo público…" aria-describedby="e-organizacionOtra">
+          <p class="error-campo" id="e-organizacionOtra" aria-live="polite"></p>
+        </div>
+        <div class="fila-form">
+          <div class="campo" id="g-empresa">
+            <label for="f-empresa">Empresa <span class="opc">(opcional)</span></label>
+            <input id="f-empresa" autocomplete="organization" maxlength="80">
+          </div>
+          <div class="campo">
+            <label for="f-rubro">Rubro <span class="opc">(opcional)</span></label>
+            <select id="f-rubro">
+              <option value="">Elegir…</option>
+              <option value="limpieza">Limpieza</option>
+              <option value="mantenimiento">Mantenimiento de edificios</option>
+              <option value="ambos">Limpieza y mantenimiento</option>
+              <option value="seguridad">Seguridad</option>
+              <option value="servicios">Servicios generales</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="campo">
+          <span class="rotulo-campo" id="l-personal">Personal en campo <span class="opc">(opcional)</span></span>
+          <div class="chips-form" role="radiogroup" aria-labelledby="l-personal">
+            <label><input type="radio" name="personal" value="1-10"><span>1 a 10</span></label>
+            <label><input type="radio" name="personal" value="11-50"><span>11 a 50</span></label>
+            <label><input type="radio" name="personal" value="51-200"><span>51 a 200</span></label>
+            <label><input type="radio" name="personal" value="200+"><span>Más de 200</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="bloque">
+        <legend>Cómo contactarte</legend>
+        <div class="fila-form">
+          <div class="campo">
+            <label for="f-telefono">N.º de contacto (WhatsApp) <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-telefono" type="tel" autocomplete="tel" inputmode="tel" maxlength="25" placeholder="+598 99 123 456" required aria-describedby="e-telefono">
+            <p class="error-campo" id="e-telefono" aria-live="polite"></p>
+          </div>
+          <div class="campo">
+            <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-email" type="email" autocomplete="email" maxlength="120" placeholder="nombre@empresa.com" required aria-describedby="e-email">
+            <p class="error-campo" id="e-email" aria-live="polite"></p>
+          </div>
+        </div>
+        <div class="campo">
+          <span class="rotulo-campo" id="l-contacto">Prefiero que me contacten por</span>
+          <div class="chips-form" role="radiogroup" aria-labelledby="l-contacto">
+            <label><input type="radio" name="contactoPreferido" value="whatsapp" checked><span>WhatsApp</span></label>
+            <label><input type="radio" name="contactoPreferido" value="llamada"><span>Llamada</span></label>
+            <label><input type="radio" name="contactoPreferido" value="email"><span>Email</span></label>
+          </div>
+        </div>
+        <div class="fila-form">
+          <div class="campo">
+            <label for="f-origen">¿Cómo nos conociste? <span class="opc">(opcional)</span></label>
+            <select id="f-origen">
+              <option value="">Elegir…</option>
+              <option value="recomendacion">Me lo recomendaron</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="instagram">Instagram</option>
+              <option value="facebook">Facebook</option>
+              <option value="google">Google</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="campo" id="g-origenDetalle" hidden>
+            <label for="f-origenDetalle" id="l-origenDetalle">¿Quién te lo recomendó? (opcional)</label>
+            <input id="f-origenDetalle" maxlength="80">
+          </div>
+        </div>
+        <div class="campo">
+          <label for="f-comentario">¿Algo que quieras ver en la demo? <span class="opc">(opcional)</span></label>
+          <textarea id="f-comentario" rows="2" maxlength="500" placeholder="Por ejemplo: control de horas, geocercas, pedidos de insumos…"></textarea>
+        </div>
+        <div class="trampa" aria-hidden="true">
+          <label for="f-sitio">No completar</label>
+          <input id="f-sitio" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label class="consentimiento" for="f-consentimiento">
+            <input type="checkbox" id="f-consentimiento" aria-describedby="e-consentimiento">
+            <span>Autorizo a DVelaris a contactarme para coordinar la demo. Mis datos no se comparten con terceros. <span class="req" aria-hidden="true">*</span></span>
+          </label>
+          <p class="error-campo" id="e-consentimiento" aria-live="polite"></p>
+        </div>
+      </fieldset>
+
+      <p class="estado-envio" id="formEstado" role="status" hidden></p>
+      <div class="form-acciones">
+        <p class="nota-req"><span class="req">*</span> Obligatorio</p>
+        <button class="btn btn-grande" id="formEnviar" type="submit">Solicitar demo</button>
+      </div>
+    </form>
+
+    <div class="gracias" id="formGracias" hidden>
+      <div class="gracias-sello" aria-hidden="true">✓</div>
+      <h3>¡Gracias, <span id="graciasNombre"></span>!</h3>
+      <p>Recibimos tu solicitud. Te vamos a contactar <span id="graciasCanal">por WhatsApp</span> para coordinar la demo de Jornexa.</p>
+      <button class="btn btn-grande" id="formListo" type="button">Volver a la demo</button>
+    </div>
+  </section>
+</div>
+
+<svg class="cursor" id="cursorSimulado" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7 19 2.6-7.4L20 11z" fill="#fff" stroke="#072E73" stroke-width="1.6" stroke-linejoin="round"/></svg>
+<noscript><p style="position:fixed;inset:auto 16px 16px;z-index:10;background:#fff;padding:12px;border-radius:12px">Esta demo necesita JavaScript activado.</p></noscript>
+<script type="module" src="main.js"></script>
+
+</body></html>
