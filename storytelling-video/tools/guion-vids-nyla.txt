@@ -1,0 +1,40 @@
+GUION PARA GOOGLE VIDS — voz Nyla, español latino
+Cómo usarlo: en Vids, pega cada bloque como locución (Voiceover), elige Nyla y deja la etiqueta [..] al inicio de cada bloque.
+Las etiquetas siguen tu arco: [thoughtful] → [determination] → [positive] → [enthusiasm] (el final es el más enérgico).
+Deja una pausa clara (≈0,5 s) entre frases: así el video corta cada frase sola.
+
+── 1 · PROBLEMA ──────────────── [thoughtful]
+[thoughtful] Cada mañana, una empresa de limpieza y mantenimiento enfrenta lo mismo.
+Personal repartido en decenas de sedes, pedidos por mensajes, incidencias en papel.
+Y nadie que vea el panorama completo.
+
+── 2 · JORNEXA ───────────────── [determination]
+[determination] Jornexa, gestión conectada, convierte esa operación en un centro de mando vivo.
+Datos, contexto, decisión y acción, en un solo lugar.
+
+── 3 · DATOS ─────────────────── [determination]
+[determination] Primero, los datos. Amanece, y el personal marca su entrada desde el celular.
+La geocerca confirma que cada persona está donde debe estar, y cada jornada aparece en el mapa, en tiempo real.
+
+── 4 · CONTEXTO ──────────────── [positive]
+[positive] Después, el contexto. Jornexa detecta lo que necesita atención:
+una entrada fuera de la geocerca,
+una fuga de agua en el centro comercial,
+y el desinfectante del colegio por debajo del mínimo.
+
+── 5 · DECISIÓN ──────────────── [positive]
+[positive] Y llega la decisión. El copiloto de inteligencia artificial propone y explica.
+[enthusiasm] ¡Y tú tienes la última palabra! Apruebas con un solo clic.
+
+── 6 · ACCIÓN ────────────────── [enthusiasm]
+[enthusiasm] Entonces, la acción. La camioneta sale con los insumos, y el técnico llega a resolver la incidencia.
+Hasta el nuevo cliente, un hotel en construcción, pasa de obra a operación.
+Todo queda registrado.
+
+── 7 · CIERRE ────────────────── [enthusiasm]
+[enthusiasm] Jornexa.
+Software que entiende lo que está pasando, propone qué hacer, y deja la decisión a las personas.
+[enthusiasm] ¡Qué esperas! ¡Solicita tu demo!
+
+Entrega: exporta el video/audio de Vids y súbelo a la conversación (Drive no sirve para archivos grandes). Yo extraigo el audio,
+lo corto en las 19 frases, regenero la música a su medida y renderizo el MP4.
