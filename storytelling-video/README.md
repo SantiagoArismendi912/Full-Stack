@@ -23,4 +23,10 @@ python3 tools/ensamblar.py
 npx hyperframes check .
 npx hyperframes render . -o out/jornexa-storytelling.mp4
 ```
+### Usar otra voz (humana, ElevenLabs, VoiceStudio…)
+1. Graba las 19 frases listadas en `tools/guion-voz.txt` (una por archivo, WAV, con los nombres exactos) en una carpeta.
+2. `./venv/bin/python tools/construir_audio.py - assets/audio tools/tiempos.json --voces <carpeta>` — normaliza las voces, regenera la música a su medida y recalcula los tiempos.
+3. `python3 tools/ensamblar.py`, `npx hyperframes check .` y `npx hyperframes render . -o out/crudo.mp4`; luego
+   `ffmpeg -i out/crudo.mp4 -c:v copy -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:a aac -b:a 192k out/jornexa-storytelling.mp4`.
+
 Para cambiar el texto de la narración, edita `GUION` en `construir_audio.py` y repite los pasos: los tiempos de cada imagen se recalculan solos.

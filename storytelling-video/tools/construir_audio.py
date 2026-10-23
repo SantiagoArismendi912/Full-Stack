@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Genera la voz (Kokoro, voz femenina en español) y la música original del storytelling.
 
-Uso:  python construir_audio.py <carpeta-con-modelos-kokoro> <salida-assets/audio> <tiempos.json>
+Uso:  python construir_audio.py <carpeta-con-modelos-kokoro> <salida-assets/audio> <tiempos.json> [--voces <carpeta>]
+Con --voces no se usa Kokoro: se leen las voces ya grabadas (voz-<escena>-<n>.wav, ver guion-voz.txt), se normalizan
+y se recalculan los tiempos de todo el video a partir de su duración real. Sirve para cualquier voz externa.
 Modelos: kokoro-v1.0.onnx y voices-v1.0.bin (https://github.com/thewh1teagle/kokoro-onnx/releases).
 La música se sintetiza aquí mismo (numpy/scipy): es obra original, sin muestras ni derechos de terceros.
 """
@@ -14,6 +16,7 @@ from kokoro_onnx import Kokoro
 from scipy.signal import butter, lfilter
 
 modelos, salida, tiempos_json = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
+voces_externas = Path(sys.argv[sys.argv.index("--voces") + 1]) if "--voces" in sys.argv else None
 salida.mkdir(parents=True, exist_ok=True)
 
 # Cada escena: lista de frases. Cada frase es una toma de imagen.
@@ -61,15 +64,22 @@ SOLAPE = 0.45          # fundido cruzado entre escenas
 COLA_FINAL = 3.4       # cierre sin voz, la música resuelve
 
 # ---------------- Voz ----------------
-k = Kokoro(str(modelos / "kokoro-v1.0.onnx"), str(modelos / "voices-v1.0.bin"))
+k = None if voces_externas else Kokoro(str(modelos / "kokoro-v1.0.onnx"), str(modelos / "voices-v1.0.bin"))
+
+
+def voz(nombre, i, texto):
+    """Devuelve (audio, sr) de la frase: de la carpeta externa o sintetizada con Kokoro."""
+    if voces_externas:
+        audio, sr = sf.read(voces_externas / f"voz-{nombre}-{i + 1}.wav")
+        return (audio.mean(axis=1) if audio.ndim > 1 else audio), sr
+    return k.create(texto, voice="ef_dora", speed=0.97, lang="es")
 escenas, cursor = [], 0.6   # 0.6 s de música sola al inicio
 for nombre, frases in GUION:
     ini = cursor
     t = ini + ENTRADA_ESCENA.get(nombre, ENTRADA_DEF)
     tomas = []
     for i, texto in enumerate(frases):
-        audio, sr = k.create(texto, voice="ef_dora", speed=0.97, lang="es")
-        assert sr == SR_VOZ
+        audio, sr = voz(nombre, i, texto)
         audio = audio / max(1e-9, float(np.max(np.abs(audio)))) * 0.85
         archivo = f"voz-{nombre}-{i + 1}.wav"
         sf.write(salida / archivo, audio, sr)
