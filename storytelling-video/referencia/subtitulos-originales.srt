@@ -1,0 +1,44 @@
+1
+00:00:00,360 --> 00:00:03,000
+El cliente preguntó, "¿Cuántas horas
+
+2
+00:00:03,000 --> 00:00:05,720
+llevamos en el proyecto?" Y la respuesta
+
+3
+00:00:05,720 --> 00:00:09,680
+debía ser inmediata. Había tres archivos,
+
+4
+00:00:09,680 --> 00:00:14,760
+dos versiones y ninguna respuesta segura,
+
+5
+00:00:14,760 --> 00:00:17,560
+pero el plazo seguía corriendo y el
+
+6
+00:00:17,560 --> 00:00:22,160
+cliente esperaba. Por eso Jornxa conecta
+
+7
+00:00:22,160 --> 00:00:26,040
+cada registro: horas, responsables,
+
+8
+00:00:26,040 --> 00:00:29,320
+costos y avances actualizados en tiempo
+
+9
+00:00:29,320 --> 00:00:29,680
+real.
+
+10
+00:00:30,520 --> 00:00:33,520
+La respuesta ahora aparece en segundos.
+
+11
+00:00:34,120 --> 00:00:37,680
+Menos dudas, mejores decisiones.
+
