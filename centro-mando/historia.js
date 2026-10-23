@@ -18,7 +18,7 @@ export const GUION = [
   { t: 20500, acto: 2, evento: { tipo: 'INCIDENCIA', sedeId: 'comercial', id: 'fuga-comercial', texto: 'Pérdida de agua en el baño del segundo piso.' } },
   { t: 24000, acto: 2, camara: 'colegio', evento: { tipo: 'CONSUMO', sedeId: 'colegio', insumo: 'desinfectante', cantidad: 3 } },
   { t: 27000, acto: 2, camara: 'general', evento: { tipo: 'CRM_AVANZAR' } },
-  { t: 30000, acto: 3, rotulo: 'Decisión · El copiloto propone; la persona aprueba', evento: { tipo: 'HORA', hora: '11:00' } },
+  { t: 30000, acto: 3, rotulo: 'Decisión · El copiloto propone; tú tienes la última palabra', evento: { tipo: 'HORA', hora: '11:00' } },
   { t: 32000, acto: 3, camara: 'clinica', aprobar: 'zona-ana' },
   { t: 37000, acto: 3, camara: 'colegio', aprobar: 'pedido-colegio-desinfectante' },
   { t: 43000, acto: 3, camara: 'comercial', aprobar: 'inc-fuga-comercial' },
