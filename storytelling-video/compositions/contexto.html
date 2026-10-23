@@ -1,0 +1,64 @@
+<template>
+  <style>
+    @font-face { font-family: 'Quicksand'; src: url('assets/fonts/Quicksand.ttf'); font-weight: 300 700; }
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: 'Quicksand', sans-serif; color: #072E73; background: #EDF5F5; }
+
+    .pic { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .pic img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .llamada { position: absolute; border: 6px solid #21D4E8; box-shadow: 0 0 0 3px #072E73; border-radius: 14px; }
+    .llamada b { position: absolute; left: -9px; top: -64px; background: #072E73; color: #fff; font-size: 30px; font-weight: 700; padding: 8px 18px; border-radius: 10px; white-space: nowrap; }
+    .llamada.abajo b { top: auto; bottom: -64px; }
+    .llamada.der b { left: auto; right: -9px; }
+    .placa { position: absolute; left: 96px; top: 740px; min-width: 760px; background: #072E73; color: #fff; padding: 26px 40px 30px; box-shadow: 14px 14px 0 #21D4E8; }
+    .placa i { display: block; font-style: normal; font-size: 28px; font-weight: 700; letter-spacing: 0.14em; color: #21D4E8; margin-bottom: 8px; }
+    .placa h2 { margin: 0; font-size: 68px; line-height: 1.05; font-weight: 700; }
+    .placa p { margin: 10px 0 0; font-size: 34px; font-weight: 500; color: #9ADBD4; }
+  </style>
+  <div id="root" data-composition-id="contexto" data-width="1920" data-height="1080">
+
+    <div data-layout-allow-overflow class="pic" id="pic-1"><img src="assets/clinica.png" alt="Clínica Sur con alerta de geocerca">
+      <div class="llamada abajo" id="ll-1" style="left:14px;top:194px;width:364px;height:178px"><b>Fuera de geocerca</b></div>
+    </div>
+    <div data-layout-allow-overflow class="pic" id="pic-2"><img src="assets/comercial.png" alt="Centro comercial con incidencia">
+      <div class="llamada abajo" id="ll-2" style="left:338px;top:90px;width:156px;height:118px"><b>Incidencia abierta</b></div>
+    </div>
+    <div data-layout-allow-overflow class="pic" id="pic-3"><img src="assets/colegio.png" alt="Colegio con insumo bajo el mínimo">
+      <div class="llamada abajo" id="ll-3" style="left:500px;top:90px;width:154px;height:118px"><b>Insumos críticos</b></div>
+    </div>
+    <div class="placa" id="pl-1"><i>CONTEXTO</i><h2>Jornexa detecta</h2><p>lo que necesita atención</p></div>
+    <div class="placa" id="pl-2"><i>CONTEXTO</i><h2>Fuera de geocerca</h2><p>Ana Pereira · Clínica Sur</p></div>
+    <div class="placa" id="pl-3"><i>CONTEXTO</i><h2>Fuga de agua</h2><p>Centro Comercial Paseo</p></div>
+    <div class="placa" id="pl-4"><i>CONTEXTO</i><h2>Insumo bajo el mínimo</h2><p>Colegio Norte · desinfectante</p></div>
+
+  </div>
+  <script>
+    const SH = [{"s": 0.55, "d": 4.096}, {"s": 4.946, "d": 2.005}, {"s": 7.251, "d": 2.581}, {"s": 10.133, "d": 3.115}];
+    const DUR = 13.947;
+
+    const tl = gsap.timeline({ paused: true });
+    const E = (id) => '#' + id;
+    function placa(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, x: -70 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, x: -40, duration: 0.3, ease: 'power2.in' }, fin - 0.3);
+    }
+    function llamada(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.6)' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, duration: 0.25, ease: 'power2.in' }, fin - 0.25);
+    }
+    function camara(id, t, d, z0, z1, origen) {
+      tl.fromTo(E(id), { scale: z0, transformOrigin: origen }, { scale: z1, transformOrigin: origen, duration: d, ease: 'none' }, t);
+    }
+    tl.fromTo('#root', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power1.out' }, 0);
+
+
+    camara('pic-1', 0, SH[2].s + 0.6, 1.0, 1.07, '15% 30%');
+    tl.fromTo('#pic-2', { x: 1920 }, { x: 0, duration: 0.55, ease: 'power3.inOut' }, SH[2].s - 0.05);
+    camara('pic-2', SH[2].s, SH[2].d + 0.6, 1.0, 1.07, '75% 60%');
+    tl.fromTo('#pic-3', { x: 1920 }, { x: 0, duration: 0.55, ease: 'power3.inOut' }, SH[3].s - 0.05);
+    camara('pic-3', SH[3].s, DUR - SH[3].s, 1.0, 1.07, '20% 20%');
+    placa('pl-1', SH[0].s, SH[1].s); placa('pl-2', SH[1].s, SH[2].s); placa('pl-3', SH[2].s, SH[3].s); placa('pl-4', SH[3].s, null);
+    llamada('ll-1', SH[1].s + 0.3, SH[2].s); llamada('ll-2', SH[2].s + 0.5, SH[3].s); llamada('ll-3', SH[3].s + 0.5, null);
+
+    window.__timelines["contexto"] = tl;
+  </script>
+</template>

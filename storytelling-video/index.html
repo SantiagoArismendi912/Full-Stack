@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Jornexa · Centro de Mando — storytelling</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #EDF5F5; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="84.925" data-width="1920" data-height="1080">
+    <div id="problema" data-composition-id="problema" data-composition-src="compositions/problema.html"
+         data-start="0.0" data-duration="13.863" data-track-index="1" data-track-kind="graphics"
+         data-width="1920" data-height="1080" style="z-index:1"></div>
+    <div id="jornexa" data-composition-id="jornexa" data-composition-src="compositions/jornexa.html"
+         data-start="13.413" data-duration="9.772" data-track-index="1" data-track-kind="graphics"
+         data-width="1920" data-height="1080" style="z-index:2"></div>
+    <div id="datos" data-composition-id="datos" data-composition-src="compositions/datos.html"
+         data-start="22.735" data-duration="12.793" data-track-index="1" data-track-kind="graphics"
+         data-width="1920" data-height="1080" style="z-index:3"></div>
+    <div id="contexto" data-composition-id="contexto" data-composition-src="compositions/contexto.html"
+         data-start="35.078" data-duration="13.947" data-track-index="1" data-track-kind="graphics"
+         data-width="1920" data-height="1080" style="z-index:4"></div>
+    <div id="decision" data-composition-id="decision" data-composition-src="compositions/decision.html"
+         data-start="48.575" data-duration="10.916" data-track-index="1" data-track-kind="graphics"
+         data-width="1920" data-height="1080" style="z-index:5"></div>
+    <div id="accion" data-composition-id="accion" data-composition-src="compositions/accion.html"
+         data-start="59.041" data-duration="13.37" data-track-index="1" data-track-kind="graphics"
+         data-width="1920" data-height="1080" style="z-index:6"></div>
+    <div id="cierre" data-composition-id="cierre" data-composition-src="compositions/cierre.html"
+         data-start="71.961" data-duration="12.964" data-track-index="1" data-track-kind="graphics"
+         data-width="1920" data-height="1080" style="z-index:7"></div>
+
+      <!-- Voz femenina (Kokoro · ef_dora, español), una pista por frase -->
+    <audio id="voz-problema-1" class="clip" src="assets/audio/voz-problema-1.wav" data-start="1.15" data-duration="3.989" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-problema-2" class="clip" src="assets/audio/voz-problema-2.wav" data-start="5.439" data-duration="5.077" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-problema-3" class="clip" src="assets/audio/voz-problema-3.wav" data-start="10.817" data-duration="2.347" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-jornexa-1" class="clip" src="assets/audio/voz-jornexa-1.wav" data-start="14.313" data-duration="4.608" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-jornexa-2" class="clip" src="assets/audio/voz-jornexa-2.wav" data-start="19.221" data-duration="3.264" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-datos-1" class="clip" src="assets/audio/voz-datos-1.wav" data-start="23.285" data-duration="4.565" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-datos-2" class="clip" src="assets/audio/voz-datos-2.wav" data-start="28.151" data-duration="6.677" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-contexto-1" class="clip" src="assets/audio/voz-contexto-1.wav" data-start="35.628" data-duration="4.096" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-contexto-2" class="clip" src="assets/audio/voz-contexto-2.wav" data-start="40.024" data-duration="2.005" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-contexto-3" class="clip" src="assets/audio/voz-contexto-3.wav" data-start="42.329" data-duration="2.581" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-contexto-4" class="clip" src="assets/audio/voz-contexto-4.wav" data-start="45.211" data-duration="3.115" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-decision-1" class="clip" src="assets/audio/voz-decision-1.wav" data-start="49.125" data-duration="4.693" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-decision-2" class="clip" src="assets/audio/voz-decision-2.wav" data-start="54.119" data-duration="4.672" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-accion-1" class="clip" src="assets/audio/voz-accion-1.wav" data-start="59.591" data-duration="5.952" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-accion-2" class="clip" src="assets/audio/voz-accion-2.wav" data-start="65.843" data-duration="4.117" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-accion-3" class="clip" src="assets/audio/voz-accion-3.wav" data-start="70.26" data-duration="1.451" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-cierre-1" class="clip" src="assets/audio/voz-cierre-1.wav" data-start="72.861" data-duration="0.811" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-cierre-2" class="clip" src="assets/audio/voz-cierre-2.wav" data-start="73.971" data-duration="5.355" data-track-index="2" data-volume="1"></audio>
+    <audio id="voz-cierre-3" class="clip" src="assets/audio/voz-cierre-3.wav" data-start="79.626" data-duration="1.899" data-track-index="2" data-volume="1"></audio>
+
+      <!-- Música electrónica original (sintetizada en código; sin derechos de terceros). Ya baja sola bajo la voz. -->
+      <audio id="musica" class="clip" src="assets/audio/musica.mp3" data-start="0" data-duration="84.925" data-track-index="3" data-volume="0.8"></audio>
+
+      <!-- Efectos de sonido -->
+    <audio id="sfx-1" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="13.284" data-duration="0.57" data-track-index="4" data-volume="0.45"></audio>
+    <audio id="sfx-2" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="22.606" data-duration="0.57" data-track-index="4" data-volume="0.45"></audio>
+    <audio id="sfx-3" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="34.949" data-duration="0.57" data-track-index="4" data-volume="0.45"></audio>
+    <audio id="sfx-4" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="48.446" data-duration="0.57" data-track-index="4" data-volume="0.45"></audio>
+    <audio id="sfx-5" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="58.912" data-duration="0.57" data-track-index="4" data-volume="0.45"></audio>
+    <audio id="sfx-6" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="71.832" data-duration="0.57" data-track-index="4" data-volume="0.45"></audio>
+    <audio id="sfx-7" class="clip" src="assets/audio/sfx/pop.mp3" data-start="19.199" data-duration="0.7" data-track-index="5" data-volume="0.5"></audio>
+    <audio id="sfx-8" class="clip" src="assets/audio/sfx/pop.mp3" data-start="20.048" data-duration="0.7" data-track-index="5" data-volume="0.5"></audio>
+    <audio id="sfx-9" class="clip" src="assets/audio/sfx/pop.mp3" data-start="20.831" data-duration="0.7" data-track-index="5" data-volume="0.5"></audio>
+    <audio id="sfx-10" class="clip" src="assets/audio/sfx/pop.mp3" data-start="21.615" data-duration="0.7" data-track-index="5" data-volume="0.5"></audio>
+    <audio id="sfx-11" class="clip" src="assets/audio/sfx/click.mp3" data-start="56.181" data-duration="0.36" data-track-index="4" data-volume="0.6"></audio>
+    <audio id="sfx-12" class="clip" src="assets/audio/sfx/pop.mp3" data-start="56.484" data-duration="0.7" data-track-index="5" data-volume="0.4"></audio>
+    <audio id="sfx-13" class="clip" src="assets/audio/sfx/pop.mp3" data-start="79.589" data-duration="0.7" data-track-index="5" data-volume="0.5"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 84.925);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

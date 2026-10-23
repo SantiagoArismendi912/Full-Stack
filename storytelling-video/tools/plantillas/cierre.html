@@ -1,0 +1,55 @@
+<template>
+  <style>
+    @font-face { font-family: 'Quicksand'; src: url('assets/fonts/Quicksand.ttf'); font-weight: 300 700; }
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: 'Quicksand', sans-serif; color: #072E73; background: #EDF5F5; }
+
+    #root { background: #072E73; }
+    #cz-logo { position: absolute; left: 140px; top: 170px; width: 1100px; background: #fff; padding: 44px 60px; box-sizing: border-box; box-shadow: 16px 16px 0 #21D4E8; }
+    #cz-logo img { display: block; width: 980px; height: 245px; }
+    #cz-flujo { position: absolute; left: 140px; top: 620px; font-size: 80px; font-weight: 700; color: #fff; white-space: nowrap; }
+    #cz-flujo span { display: inline-block; margin-right: 26px; opacity: 0; }
+    #cz-flujo .fl { color: #21D4E8; }
+    #cz-cta { position: absolute; left: 140px; top: 810px; background: #21D4E8; color: #072E73; font-size: 72px; font-weight: 700; padding: 28px 64px; box-shadow: 14px 14px 0 #fff; opacity: 0; }
+    #cz-dv { position: absolute; left: 1380px; top: 170px; width: 400px; background: #fff; padding: 20px 28px; box-sizing: border-box; opacity: 0; }
+    #cz-dv img { display: block; width: 344px; }
+    #cz-url { position: absolute; left: 1330px; top: 830px; font-size: 60px; font-weight: 600; color: #9ADBD4; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="cierre" data-width="1920" data-height="1080">
+
+    <div id="cz-logo"><img src="assets/jornexa-logo.svg" alt="Jornexa · Gestión Conectada"></div>
+    <div id="cz-flujo"><span>Datos</span><span class="fl">→</span><span>Contexto</span><span class="fl">→</span><span>Decisión</span><span class="fl">→</span><span>Acción</span></div>
+    <div id="cz-cta">Agenda tu demo con DVelaris</div>
+    <div id="cz-dv"><img src="assets/dvelaris-logo.png" alt="DVelaris" width="344" height="__DVH__"></div>
+    <div id="cz-url">dvelaris.com</div>
+
+  </div>
+  <script>
+    const SH = __SHOTS__;
+    const DUR = __DUR__;
+
+    const tl = gsap.timeline({ paused: true });
+    const E = (id) => '#' + id;
+    function placa(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, x: -70 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, x: -40, duration: 0.3, ease: 'power2.in' }, fin - 0.3);
+    }
+    function llamada(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.6)' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, duration: 0.25, ease: 'power2.in' }, fin - 0.25);
+    }
+    function camara(id, t, d, z0, z1, origen) {
+      tl.fromTo(E(id), { scale: z0, transformOrigin: origen }, { scale: z1, transformOrigin: origen, duration: d, ease: 'none' }, t);
+    }
+    tl.fromTo('#root', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power1.out' }, 0);
+
+
+    tl.fromTo('#cz-logo', { opacity: 0, x: -100 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out' }, SH[0].s - 0.2);
+    const sp = document.querySelectorAll('#cz-flujo span');
+    sp.forEach((el, i) => tl.fromTo(el, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, SH[1].s + 0.15 + i * (SH[1].d * 0.8 / sp.length)));
+    tl.fromTo('#cz-cta', { opacity: 0, scale: 0.8, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'back.out(1.8)' }, SH[2].s + 0.05);
+    tl.fromTo('#cz-dv', { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, SH[2].s + 0.3);
+    tl.fromTo('#cz-url', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SH[2].s + 0.6);
+
+    window.__timelines["cierre"] = tl;
+  </script>
+</template>

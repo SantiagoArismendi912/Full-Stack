@@ -1,0 +1,66 @@
+<template>
+  <style>
+    @font-face { font-family: 'Quicksand'; src: url('assets/fonts/Quicksand.ttf'); font-weight: 300 700; }
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: 'Quicksand', sans-serif; color: #072E73; background: #EDF5F5; }
+
+    .pic { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .pic img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .llamada { position: absolute; border: 6px solid #21D4E8; box-shadow: 0 0 0 3px #072E73; border-radius: 14px; }
+    .llamada b { position: absolute; left: -9px; top: -64px; background: #072E73; color: #fff; font-size: 30px; font-weight: 700; padding: 8px 18px; border-radius: 10px; white-space: nowrap; }
+    .llamada.abajo b { top: auto; bottom: -64px; }
+    .llamada.der b { left: auto; right: -9px; }
+    .placa { position: absolute; left: 96px; top: 740px; min-width: 760px; background: #072E73; color: #fff; padding: 26px 40px 30px; box-shadow: 14px 14px 0 #21D4E8; }
+    .placa i { display: block; font-style: normal; font-size: 28px; font-weight: 700; letter-spacing: 0.14em; color: #21D4E8; margin-bottom: 8px; }
+    .placa h2 { margin: 0; font-size: 68px; line-height: 1.05; font-weight: 700; }
+    .placa p { margin: 10px 0 0; font-size: 34px; font-weight: 500; color: #9ADBD4; }
+
+    #cursor { position: absolute; left: 0; top: 0; width: 64px; height: 64px; }
+    #anillo { position: absolute; left: 250px; top: 410px; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 8px solid #072E73; opacity: 0; }
+    #ok { position: absolute; left: 400px; top: 400px; background: #2E8B57; color: #fff; font-size: 36px; font-weight: 700; padding: 12px 26px; border-radius: 12px; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="decision" data-width="1920" data-height="1080">
+
+    <div data-layout-allow-overflow class="pic" id="pic-1"><img src="assets/copiloto.png" alt="Copiloto con tres propuestas">
+      <div class="llamada" id="ll-1" style="left:14px;top:196px;width:364px;height:440px"><b>Propone y explica</b></div>
+      <div id="anillo"></div>
+      <div id="ok">✓ Aprobado por una persona</div>
+      <svg id="cursor" viewBox="0 0 24 24"><path d="M3 2l7 19 2.6-7.4L20 11z" fill="#fff" stroke="#072E73" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="placa" id="pl-1"><i>DECISIÓN</i><h2>El copiloto propone</h2><p>y explica cada caso</p></div>
+    <div class="placa" id="pl-2"><i>DECISIÓN</i><h2>La persona aprueba</h2><p>un clic y queda registrado</p></div>
+
+  </div>
+  <script>
+    const SH = [{"s": 0.55, "d": 4.693}, {"s": 5.544, "d": 4.672}];
+    const DUR = 10.916;
+
+    const tl = gsap.timeline({ paused: true });
+    const E = (id) => '#' + id;
+    function placa(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, x: -70 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, x: -40, duration: 0.3, ease: 'power2.in' }, fin - 0.3);
+    }
+    function llamada(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.6)' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, duration: 0.25, ease: 'power2.in' }, fin - 0.25);
+    }
+    function camara(id, t, d, z0, z1, origen) {
+      tl.fromTo(E(id), { scale: z0, transformOrigin: origen }, { scale: z1, transformOrigin: origen, duration: d, ease: 'none' }, t);
+    }
+    tl.fromTo('#root', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power1.out' }, 0);
+
+
+    camara('pic-1', 0, DUR, 1.0, 1.07, '10% 35%');
+    placa('pl-1', SH[0].s, SH[1].s); placa('pl-2', SH[1].s, null);
+    llamada('ll-1', SH[0].s + 0.8, SH[1].s);
+    // cursor simulado: llega al botón «Asignar a Pablo Suárez», hace clic y aparece la aprobación
+    const tc = SH[1].s + SH[1].d * 0.45;
+    tl.fromTo('#cursor', { x: 700, y: 760, opacity: 0 }, { x: 250, y: 425, opacity: 1, duration: 1.1, ease: 'power2.inOut' }, tc - 1.3);
+    tl.to('#cursor', { scale: 0.86, duration: 0.1, ease: 'power1.in' }, tc);
+    tl.to('#cursor', { scale: 1, duration: 0.15, ease: 'power1.out' }, tc + 0.1);
+    tl.fromTo('#anillo', { opacity: 0.9, scale: 0.4 }, { opacity: 0, scale: 2.4, duration: 0.6, ease: 'power2.out' }, tc);
+    tl.fromTo('#ok', { opacity: 0, y: 24, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.8)' }, tc + 0.35);
+
+    window.__timelines["decision"] = tl;
+  </script>
+</template>

@@ -465,8 +465,8 @@ export function crearEscena(contenedor, { ligera = false, reducirMovimiento = fa
   let enfoque = null;
   function enfocar(objetivo) {
     const reg = sedes[objetivo];
-    const destino = reg ? new THREE.Vector3(reg.s.x, 0, reg.s.z) : new THREE.Vector3(0, 0, 0);
-    const zoom = reg ? (ligera ? 1.5 : 1.7) : ZOOM_GENERAL;
+    const destino = reg ? new THREE.Vector3(reg.s.x, objetivo === 'lote' ? 5 : 0, reg.s.z) : new THREE.Vector3(0, 0, 0); // el lote sube el encuadre para que entre la grúa
+    const zoom = reg ? (objetivo === 'lote' ? 1.55 : ligera ? 1.5 : 1.7) : ZOOM_GENERAL;
     if (reducirMovimiento) {
       const delta = destino.clone().sub(controles.target);
       controles.target.add(delta);

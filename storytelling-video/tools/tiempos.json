@@ -1,0 +1,169 @@
+{
+  "total": 84.925,
+  "bpm": 112,
+  "escenas": [
+    {
+      "id": "problema",
+      "ini": 0.6,
+      "fin": 13.863,
+      "tomas": [
+        {
+          "texto": "Cada mañana, una empresa de limpieza y mantenimiento enfrenta lo mismo.",
+          "archivo": "assets/audio/voz-problema-1.wav",
+          "ini": 1.15,
+          "dur": 3.989
+        },
+        {
+          "texto": "Personal repartido en decenas de sedes, pedidos por mensajes, incidencias en papel.",
+          "archivo": "assets/audio/voz-problema-2.wav",
+          "ini": 5.439,
+          "dur": 5.077
+        },
+        {
+          "texto": "Y nadie que vea el panorama completo.",
+          "archivo": "assets/audio/voz-problema-3.wav",
+          "ini": 10.817,
+          "dur": 2.347
+        }
+      ]
+    },
+    {
+      "id": "jornexa",
+      "ini": 13.413,
+      "fin": 23.185,
+      "tomas": [
+        {
+          "texto": "Jornexa, gestión conectada, convierte esa operación en un centro de mando vivo.",
+          "archivo": "assets/audio/voz-jornexa-1.wav",
+          "ini": 14.313,
+          "dur": 4.608
+        },
+        {
+          "texto": "Datos, contexto, decisión y acción, en un solo lugar.",
+          "archivo": "assets/audio/voz-jornexa-2.wav",
+          "ini": 19.221,
+          "dur": 3.264
+        }
+      ]
+    },
+    {
+      "id": "datos",
+      "ini": 22.735,
+      "fin": 35.528,
+      "tomas": [
+        {
+          "texto": "Primero, los datos. Amanece, y el personal marca su entrada desde el celular.",
+          "archivo": "assets/audio/voz-datos-1.wav",
+          "ini": 23.285,
+          "dur": 4.565
+        },
+        {
+          "texto": "La geocerca confirma que cada persona está donde debe estar, y cada jornada aparece en el mapa, en tiempo real.",
+          "archivo": "assets/audio/voz-datos-2.wav",
+          "ini": 28.151,
+          "dur": 6.677
+        }
+      ]
+    },
+    {
+      "id": "contexto",
+      "ini": 35.078,
+      "fin": 49.025,
+      "tomas": [
+        {
+          "texto": "Después, el contexto. Jornexa detecta lo que necesita atención:",
+          "archivo": "assets/audio/voz-contexto-1.wav",
+          "ini": 35.628,
+          "dur": 4.096
+        },
+        {
+          "texto": "una entrada fuera de la geocerca,",
+          "archivo": "assets/audio/voz-contexto-2.wav",
+          "ini": 40.024,
+          "dur": 2.005
+        },
+        {
+          "texto": "una fuga de agua en el centro comercial,",
+          "archivo": "assets/audio/voz-contexto-3.wav",
+          "ini": 42.329,
+          "dur": 2.581
+        },
+        {
+          "texto": "y el desinfectante del colegio por debajo del mínimo.",
+          "archivo": "assets/audio/voz-contexto-4.wav",
+          "ini": 45.211,
+          "dur": 3.115
+        }
+      ]
+    },
+    {
+      "id": "decision",
+      "ini": 48.575,
+      "fin": 59.491,
+      "tomas": [
+        {
+          "texto": "Y llega la decisión. El copiloto de inteligencia artificial propone y explica.",
+          "archivo": "assets/audio/voz-decision-1.wav",
+          "ini": 49.125,
+          "dur": 4.693
+        },
+        {
+          "texto": "Pero la última palabra siempre la tiene una persona, que aprueba con un solo clic.",
+          "archivo": "assets/audio/voz-decision-2.wav",
+          "ini": 54.119,
+          "dur": 4.672
+        }
+      ]
+    },
+    {
+      "id": "accion",
+      "ini": 59.041,
+      "fin": 72.411,
+      "tomas": [
+        {
+          "texto": "Entonces, la acción. La camioneta sale con los insumos, y el técnico llega a resolver la incidencia.",
+          "archivo": "assets/audio/voz-accion-1.wav",
+          "ini": 59.591,
+          "dur": 5.952
+        },
+        {
+          "texto": "Hasta el nuevo cliente, un hotel en construcción, pasa de obra a operación.",
+          "archivo": "assets/audio/voz-accion-2.wav",
+          "ini": 65.843,
+          "dur": 4.117
+        },
+        {
+          "texto": "Todo queda registrado.",
+          "archivo": "assets/audio/voz-accion-3.wav",
+          "ini": 70.26,
+          "dur": 1.451
+        }
+      ]
+    },
+    {
+      "id": "cierre",
+      "ini": 71.961,
+      "fin": 84.925,
+      "tomas": [
+        {
+          "texto": "Jornexa.",
+          "archivo": "assets/audio/voz-cierre-1.wav",
+          "ini": 72.861,
+          "dur": 0.811
+        },
+        {
+          "texto": "Software que entiende lo que está pasando, propone qué hacer, y deja la decisión a las personas.",
+          "archivo": "assets/audio/voz-cierre-2.wav",
+          "ini": 73.971,
+          "dur": 5.355
+        },
+        {
+          "texto": "Agenda tu demo con DVelaris.",
+          "archivo": "assets/audio/voz-cierre-3.wav",
+          "ini": 79.626,
+          "dur": 1.899
+        }
+      ]
+    }
+  ]
+}
