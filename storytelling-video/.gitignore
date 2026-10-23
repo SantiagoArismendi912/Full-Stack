@@ -5,3 +5,8 @@ vertical/.hyperframes/
 vertical/out/escenas/
 vertical/out/work-*/
 vertical/out/.*transaction*/
+cine/.hyperframes/
+cine/out/crudo.mp4
+cine/out/work-*/
+cine/out/.*transaction*/
+cine/out/*.mp4

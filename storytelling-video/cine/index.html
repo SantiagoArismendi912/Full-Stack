@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Jornexa · Centro de Mando — versión cinematográfica</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #040A1C; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="89.63" data-width="1080" data-height="1920">
+    <div id="problema" data-composition-id="problema" data-composition-src="compositions/problema.html"
+         data-start="0.0" data-duration="17.22" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:1"></div>
+    <div id="jornexa" data-composition-id="jornexa" data-composition-src="compositions/jornexa.html"
+         data-start="16.72" data-duration="11.07" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:2"></div>
+    <div id="datos" data-composition-id="datos" data-composition-src="compositions/datos.html"
+         data-start="27.29" data-duration="13.97" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:3"></div>
+    <div id="contexto" data-composition-id="contexto" data-composition-src="compositions/contexto.html"
+         data-start="40.76" data-duration="12.14" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:4"></div>
+    <div id="decision" data-composition-id="decision" data-composition-src="compositions/decision.html"
+         data-start="52.4" data-duration="11.63" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:5"></div>
+    <div id="accion" data-composition-id="accion" data-composition-src="compositions/accion.html"
+         data-start="63.53" data-duration="13.17" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:6"></div>
+    <div id="cierre" data-composition-id="cierre" data-composition-src="compositions/cierre.html"
+         data-start="76.2" data-duration="13.43" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:7"></div>
+
+      <!-- Capa de cine: viñeta y grano de película sobre todo el video -->
+      <div id="capa" data-composition-id="capa" data-composition-src="compositions/capa.html"
+           data-start="0" data-duration="89.63" data-track-index="9" data-track-kind="graphics"
+           data-width="1080" data-height="1920" style="z-index:100"></div>
+
+      <!-- Voz de Nyla (Google Vids), editada: silencios largos comprimidos -->
+      <audio id="voz" class="clip" src="assets/audio/voz-nyla.wav" data-start="0" data-duration="89.63" data-track-index="2" data-volume="1"></audio>
+      <!-- Música original: tensión, impactos y subidas sincronizados con las transiciones -->
+      <audio id="musica" class="clip" src="assets/audio/musica-cine.mp3" data-start="0" data-duration="89.63" data-track-index="3" data-volume="0.55"></audio>
+      <!-- Efectos -->
+    <audio id="sfx-1" class="clip" src="assets/audio/sfx/riser.mp3" data-start="13.631" data-duration="10.0" data-track-index="5" data-volume="0.35"></audio>
+    <audio id="sfx-2" class="clip" src="assets/audio/sfx/impact-bass-1.mp3" data-start="16.93" data-duration="2.1" data-track-index="4" data-volume="0.5"></audio>
+    <audio id="sfx-3" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="27.411" data-duration="0.57" data-track-index="4" data-volume="0.5"></audio>
+    <audio id="sfx-4" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="40.881" data-duration="0.57" data-track-index="4" data-volume="0.6"></audio>
+    <audio id="sfx-5" class="clip" src="assets/audio/sfx/whoosh-short.mp3" data-start="52.521" data-duration="0.57" data-track-index="4" data-volume="0.45"></audio>
+    <audio id="sfx-6" class="clip" src="assets/audio/sfx/click.mp3" data-start="62.76" data-duration="0.36" data-track-index="4" data-volume="0.7"></audio>
+    <audio id="sfx-7" class="clip" src="assets/audio/sfx/pop.mp3" data-start="62.963" data-duration="0.7" data-track-index="5" data-volume="0.4"></audio>
+    <audio id="sfx-8" class="clip" src="assets/audio/sfx/impact-bass-1.mp3" data-start="63.74" data-duration="2.1" data-track-index="4" data-volume="0.55"></audio>
+    <audio id="sfx-9" class="clip" src="assets/audio/sfx/riser.mp3" data-start="73.211" data-duration="10.0" data-track-index="5" data-volume="0.3"></audio>
+    <audio id="sfx-10" class="clip" src="assets/audio/sfx/pop.mp3" data-start="23.143" data-duration="0.7" data-track-index="6" data-volume="0.35"></audio>
+    <audio id="sfx-11" class="clip" src="assets/audio/sfx/pop.mp3" data-start="23.743" data-duration="0.7" data-track-index="5" data-volume="0.35"></audio>
+    <audio id="sfx-12" class="clip" src="assets/audio/sfx/pop.mp3" data-start="24.393" data-duration="0.7" data-track-index="6" data-volume="0.35"></audio>
+    <audio id="sfx-13" class="clip" src="assets/audio/sfx/pop.mp3" data-start="25.043" data-duration="0.7" data-track-index="5" data-volume="0.35"></audio>
+    <audio id="sfx-14" class="clip" src="assets/audio/sfx/impact-bass-1.mp3" data-start="84.36" data-duration="2.1" data-track-index="4" data-volume="0.6"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

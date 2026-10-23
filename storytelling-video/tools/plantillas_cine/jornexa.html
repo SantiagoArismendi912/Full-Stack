@@ -1,0 +1,69 @@
+<template>
+  <style>
+    @font-face { font-family: 'Quicksand'; src: url('assets/fonts/Quicksand.ttf'); font-weight: 300 700; }
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: 'Quicksand', sans-serif; color: #072E73; background: #EDF5F5; }
+
+    #root { background: #EDF5F5; }
+    #jx-halo { position: absolute; left: -200px; top: 100px; width: 1480px; height: 1100px; background: radial-gradient(closest-side, rgba(255,255,255,1), rgba(237,245,255,0)); }
+    #jx-plano { position: absolute; left: 60px; top: 330px; width: 960px; height: 240px; overflow: hidden; }
+    #jx-logo { position: absolute; left: 0; top: 0; width: 960px; height: 240px; }
+    #jx-barrido { position: absolute; left: -300px; top: -60px; width: 160px; height: 360px; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.95), rgba(255,255,255,0)); transform: skewX(-18deg); }
+    #jx-sub { position: absolute; left: 70px; top: 640px; width: 900px; font-size: 60px; font-weight: 600; color: #0B6075; line-height: 1.2; }
+    #jx-linea { position: absolute; left: 140px; top: 1010px; width: 10px; height: 700px; background: #072E73; }
+    .nodo { position: absolute; left: 120px; width: 50px; height: 50px; border-radius: 50%; background: #21D4E8; border: 8px solid #072E73; box-sizing: border-box; }
+    .etq { position: absolute; left: 215px; font-size: 84px; font-weight: 700; color: #072E73; white-space: nowrap; line-height: 1; }
+    #jx-blanco { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="jornexa" data-width="1080" data-height="1920">
+
+    <div id="jx-halo" data-layout-allow-overflow></div>
+    <div id="jx-plano" data-layout-allow-overflow><img id="jx-logo" src="assets/jornexa-logo.svg" alt="Jornexa · Gestión Conectada"><div id="jx-barrido"></div></div>
+    <div id="jx-sub">Centro de mando para operaciones de limpieza y mantenimiento</div>
+    <div id="jx-linea"></div>
+    <div class="nodo" id="nd-0" style="top:985px"></div><div class="etq" id="et-0" style="top:975px">Datos</div>
+    <div class="nodo" id="nd-1" style="top:1210px"></div><div class="etq" id="et-1" style="top:1200px">Contexto</div>
+    <div class="nodo" id="nd-2" style="top:1435px"></div><div class="etq" id="et-2" style="top:1425px">Decisión</div>
+    <div class="nodo" id="nd-3" style="top:1660px"></div><div class="etq" id="et-3" style="top:1650px">Acción</div>
+    <div id="jx-blanco"></div>
+
+  </div>
+  <script>
+    const SH = __SHOTS__;
+    const DUR = __DUR__;
+    const A = __ANC__;
+
+    const tl = gsap.timeline({ paused: true });
+    const E = (id) => '#' + id;
+    function placa(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, x: -150, scale: 1.04 }, { opacity: 1, x: 0, scale: 1, duration: 0.38, ease: 'power4.out' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, x: -50, duration: 0.25, ease: 'power2.in' }, fin - 0.25);
+    }
+    function llamada(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.8)' }, t);
+      tl.fromTo(E(id), { boxShadow: '0 0 0 3px #072E73' }, { boxShadow: '0 0 0 14px rgba(33,212,232,0.0)', duration: 0.5, ease: 'power2.out' }, t + 0.35);
+      if (fin !== null) tl.to(E(id), { opacity: 0, duration: 0.25, ease: 'power2.in' }, fin - 0.25);
+    }
+    function camara(id, t, d, z0, z1, origen) {
+      tl.fromTo(E(id), { scale: z0, transformOrigin: origen }, { scale: z1, transformOrigin: origen, duration: d, ease: 'none' }, t);
+    }
+
+    tl.set('#jx-linea', { scaleY: 0, transformOrigin: '50% 0%' }, 0);
+    // viene del blanco (la escena anterior termina blanca)
+    tl.fromTo('#jx-blanco', { opacity: 0 }, { opacity: 1, duration: 0.22, ease: 'power2.in' }, 0);
+    tl.to('#jx-blanco', { opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.3);
+    tl.fromTo('#jx-logo', { scale: 1.35, opacity: 0.0, transformOrigin: '50% 50%' }, { scale: 1, opacity: 1, duration: 0.7, ease: 'power3.out', transformOrigin: '50% 50%' }, 0.2);
+    tl.fromTo('#jx-barrido', { x: 0 }, { x: 1500, duration: 0.9, ease: 'power2.inOut' }, 0.75);
+    tl.fromTo('#jx-sub', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 1.8);
+    tl.to('#jx-plano', { scale: 1.05, transformOrigin: '0% 50%', duration: Math.max(1, SH[1].s - 1.2), ease: 'none' }, 1.0);
+    // "Datos, contexto, decisión y acción": cada palabra enciende su nodo
+    tl.fromTo('#jx-linea', { scaleY: 0 }, { scaleY: 1, duration: A.n3 - A.n0 + 0.6, ease: 'none', transformOrigin: '50% 0%' }, A.n0 - 0.1);
+    ['n0', 'n1', 'n2', 'n3'].forEach((k, i) => {
+      tl.fromTo('#nd-' + i, { scale: 0 }, { scale: 1, duration: 0.3, ease: 'back.out(2.4)' }, A[k]);
+      tl.fromTo('#et-' + i, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.35, ease: 'power3.out' }, A[k] + 0.03);
+    });
+    // salida: zoom a través del logotipo
+    tl.to('#root', { scale: 2.6, opacity: 0, transformOrigin: '50% 22%', duration: 0.5, ease: 'power3.in' }, DUR - 0.5);
+
+    window.__timelines["jornexa"] = tl;
+  </script>
+</template>

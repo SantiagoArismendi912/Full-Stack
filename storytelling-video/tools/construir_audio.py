@@ -101,7 +101,7 @@ total = escenas[-1]["fin"]
 # ---------------- Música original ----------------
 SR = 44100
 N = int(total * SR)
-BPM = 112
+BPM = _datos.get("bpm", 112) if solo_musica else 112
 beat = 60 / BPM
 rng = np.random.default_rng(7)  # semilla fija: la pista es siempre la misma
 
@@ -257,6 +257,31 @@ for c in range(n_compases):
         env_bombo[a:m] = np.maximum(env_bombo[a:m], np.exp(-np.arange(m - a) / SR * 9))
 duck_kick = 1 - 0.55 * env_bombo * (g_bombo > 0.5)
 base = (capas["pad"] * g_pad * 0.9 + capas["arp"] * np.clip(g_arp, 0, 1) + capas["bajo"] * g_bajo * 0.9) * duck_kick
+extra = np.zeros((2, N))
+if solo_musica:   # diseño sonoro de tráiler: latido de tensión, impactos y subidas en cada transición
+    t_fin_vo = escenas[-1]["tomas"][-1]["ini"] + escenas[-1]["tomas"][-1]["dur"]
+    # latido grave que crece hasta que entra Jornexa
+    nb = int(0.5 * SR); tb = np.arange(nb) / SR
+    latido = np.sin(2 * np.pi * np.cumsum(46 + 40 * np.exp(-tb * 30)) / SR) * np.exp(-tb * 7)
+    t = 1.0
+    while t < t_jornexa - 0.2:
+        poner(extra, t, latido, 0.15 + 0.45 * (t / t_jornexa), pan=0)
+        t += beat * 2
+    def impacto(t0, fuerza):
+        nn = int(2.2 * SR); tt = np.arange(nn) / SR
+        boom = np.sin(2 * np.pi * np.cumsum(38 + 70 * np.exp(-tt * 9)) / SR) * np.exp(-tt * 2.3)
+        crash = lp(hp(rng.standard_normal(nn), 900), 7000) * np.exp(-tt * 5.5) * 0.35
+        poner(extra, t0, boom + crash, fuerza)
+    def subida(t_fin, largo, fuerza):
+        nn = int(largo * SR); tt = np.linspace(0, 1, nn)
+        ruido = hp(rng.standard_normal(nn), 500) * tt ** 3
+        poner(extra, t_fin - largo, ruido, fuerza)
+    for i, e in enumerate(escenas[1:], 1):
+        t_corte = e["ini"] + 0.25
+        impacto(t_corte, 0.9 if e["id"] in ("jornexa", "cierre") else 0.55)
+        if e["id"] in ("jornexa", "accion", "cierre"):
+            subida(t_corte, 2.8, 0.30)
+    impacto(E["cierre"]["ini"] + E["cierre"]["anc"]["solicita"], 1.0)
 mezcla = base + capas["bombo"] * g_bombo * 0.95 + capas["hats"] * g_hats + capas["palmas"] * g_palmas * 0.8 + riser
 
 # Bajar la música mientras habla la voz (con subida y bajada suaves)
@@ -264,7 +289,7 @@ voz = np.zeros(N)
 if solo_musica:   # un bloque por escena, desde su primera frase hasta la última
     for e in escenas:
         voz[int((e["tomas"][0]["ini"] - 0.3) * SR): int((e["tomas"][-1]["ini"] + e["tomas"][-1]["dur"] + 0.4) * SR)] = 1.0
-    ventana, profundidad = int(0.9 * SR), 0.62
+    ventana, profundidad = int(0.5 * SR), 0.72   # los bloques de voz vienen medidos: bajada precisa
 else:
     for e in escenas:
         for t in e["tomas"]:
@@ -272,6 +297,8 @@ else:
     ventana, profundidad = int(0.35 * SR), 0.80
 suave = np.convolve(voz, np.ones(ventana) / ventana, mode="same")
 mezcla *= (1 - profundidad * suave)
+if solo_musica:
+    mezcla += extra
 
 # Cierre: la música sube un poco al terminar la voz y se apaga en 2,2 s
 ultimo = escenas[-1]["tomas"][-1]

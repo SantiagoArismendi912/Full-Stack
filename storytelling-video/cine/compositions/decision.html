@@ -1,0 +1,76 @@
+<template>
+  <style>
+    @font-face { font-family: 'Quicksand'; src: url('assets/fonts/Quicksand.ttf'); font-weight: 300 700; }
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: 'Quicksand', sans-serif; color: #072E73; background: #EDF5F5; }
+
+    .pic { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    .pic img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+    .llamada { position: absolute; border: 6px solid #21D4E8; box-shadow: 0 0 0 3px #072E73; border-radius: 12px; }
+    .llamada b { position: absolute; left: -9px; top: -56px; background: #072E73; color: #fff; font-size: 28px; font-weight: 700; padding: 6px 16px; border-radius: 10px; white-space: nowrap; }
+    .llamada.abajo b { top: auto; bottom: -56px; }
+    .llamada.der b { left: auto; right: -9px; }
+    .placa { position: absolute; left: 60px; top: 1330px; width: 960px; background: #072E73; color: #fff; padding: 30px 44px 36px; box-shadow: 14px 14px 0 #21D4E8; }
+    .placa i { display: block; font-style: normal; font-size: 30px; font-weight: 700; letter-spacing: 0.14em; color: #21D4E8; margin-bottom: 10px; }
+    .placa h2 { margin: 0; font-size: 74px; line-height: 1.05; font-weight: 700; }
+    .placa p { margin: 14px 0 0; font-size: 38px; font-weight: 500; color: #9ADBD4; line-height: 1.15; }
+    .velo { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(4,10,28,0) 55%, rgba(4,10,28,0.55) 100%); }
+    .cubre { position: absolute; inset: 0; opacity: 0; }
+
+    #cursor { position: absolute; left: 0; top: 0; width: 64px; height: 64px; }
+    #anillo { position: absolute; left: 178px; top: 440px; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 8px solid #072E73; opacity: 0; }
+    #ok { position: absolute; left: 392px; top: 430px; background: #2E8B57; color: #fff; font-size: 34px; font-weight: 700; padding: 10px 22px; border-radius: 12px; opacity: 0; white-space: nowrap; }
+    #dc-palabra { position: absolute; left: 60px; top: 1030px; width: 960px; padding: 34px 48px 40px; background: #072E73; font-size: 116px; line-height: 1.02; font-weight: 700; color: #fff; opacity: 0; box-shadow: 14px 14px 0 #21D4E8; }
+    #dc-palabra span { color: #21D4E8; }
+    #dc-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="decision" data-width="1080" data-height="1920">
+
+    <div data-layout-allow-overflow class="pic" id="pic-1"><img src="assets/copiloto.png" alt="Copiloto con tres propuestas"><div class="llamada " id="ll-1" style="left:14px;top:196px;width:364px;height:440px"><b>Propone y explica</b></div><div id="anillo"></div><div id="ok">✓ Aprobado por ti</div><svg id="cursor" viewBox="0 0 24 24"><path d="M3 2l7 19 2.6-7.4L20 11z" fill="#fff" stroke="#072E73" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+    <div class="velo"></div>
+    <div id="dc-palabra">Tú tienes la <span>última palabra.</span></div>
+    <div class="placa" id="pl-1"><i>DECISIÓN</i><h2>El copiloto propone</h2><p>y explica cada caso</p></div>
+    <div class="placa" id="pl-2"><i>DECISIÓN</i><h2>Un solo clic</h2><p>y queda registrado</p></div>
+    <div id="dc-flash"></div>
+
+  </div>
+  <script>
+    const SH = [{"s": 0.5, "d": 6.67}, {"s": 7.17, "d": 3.46}];
+    const DUR = 11.63;
+    const A = {"click": 10.4, "palabra": 7.17};
+
+    const tl = gsap.timeline({ paused: true });
+    const E = (id) => '#' + id;
+    function placa(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, x: -150, scale: 1.04 }, { opacity: 1, x: 0, scale: 1, duration: 0.38, ease: 'power4.out' }, t);
+      if (fin !== null) tl.to(E(id), { opacity: 0, x: -50, duration: 0.25, ease: 'power2.in' }, fin - 0.25);
+    }
+    function llamada(id, t, fin) {
+      tl.fromTo(E(id), { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.8)' }, t);
+      tl.fromTo(E(id), { boxShadow: '0 0 0 3px #072E73' }, { boxShadow: '0 0 0 14px rgba(33,212,232,0.0)', duration: 0.5, ease: 'power2.out' }, t + 0.35);
+      if (fin !== null) tl.to(E(id), { opacity: 0, duration: 0.25, ease: 'power2.in' }, fin - 0.25);
+    }
+    function camara(id, t, d, z0, z1, origen) {
+      tl.fromTo(E(id), { scale: z0, transformOrigin: origen }, { scale: z1, transformOrigin: origen, duration: d, ease: 'none' }, t);
+    }
+
+    // entra con el iris (se abre desde el botón del copiloto)
+    tl.fromTo('#root', { clipPath: 'circle(0px at 180px 440px)' }, { clipPath: 'circle(2400px at 180px 440px)', duration: 0.7, ease: 'power2.inOut' }, 0);
+    camara('pic-1', 0.2, DUR - 0.2, 1.4, 1.55, '0% 0%');
+    placa('pl-1', SH[0].s + 0.2, SH[1].s);
+    llamada('ll-1', SH[0].s + 1.0, SH[1].s);
+    // "Y tú tienes la última palabra": titular enorme sobre el mapa
+    tl.fromTo('#dc-palabra', { opacity: 0, scale: 1.4, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: 'power4.out' }, SH[1].s + 0.1);
+    tl.to('#dc-palabra', { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' }, A.click - 0.9);
+    placa('pl-2', A.click - 0.7, null);
+    // cursor: llega al botón «Asignar», clic, aprobación
+    tl.fromTo('#cursor', { x: 520, y: 700, opacity: 0 }, { x: 178, y: 440, opacity: 1, duration: 1.0, ease: 'power2.inOut' }, A.click - 1.1);
+    tl.to('#cursor', { scale: 0.86, duration: 0.08, ease: 'power1.in' }, A.click);
+    tl.to('#cursor', { scale: 1, duration: 0.12, ease: 'power1.out' }, A.click + 0.08);
+    tl.fromTo('#anillo', { opacity: 0.9, scale: 0.4 }, { opacity: 0, scale: 2.6, duration: 0.55, ease: 'power2.out' }, A.click);
+    tl.fromTo('#ok', { opacity: 0, y: 24, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.8)' }, A.click + 0.2);
+    // salida: corte con destello justo después del clic
+    tl.to('#dc-flash', { opacity: 1, duration: 0.18, ease: 'power2.in' }, DUR - 0.3);
+
+    window.__timelines["decision"] = tl;
+  </script>
+</template>

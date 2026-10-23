@@ -1,0 +1,21 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    #vineta { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 46%, rgba(4,10,28,0) 52%, rgba(4,10,28,0.42) 100%); }
+    #grano { position: absolute; left: -200px; top: -200px; width: 1480px; height: 2320px; background: url(assets/grano.png); background-size: 512px 512px; opacity: 0.075; mix-blend-mode: overlay; }
+  </style>
+  <div id="root" data-composition-id="capa" data-width="1080" data-height="1920">
+    <div id="vineta"></div><div id="grano" data-layout-allow-overflow></div>
+  </div>
+  <script>
+    const DUR = 89.63;
+    const tl = gsap.timeline({ paused: true });
+    // grano: salta de posición 12 veces por segundo (tabla fija, determinista)
+    let s = 7;
+    for (let t = 0; t < DUR; t += 1 / 12) {
+      s = (s * 1103515245 + 12345) % 2147483648;
+      tl.set('#grano', { x: -(s % 190), y: -((s >> 8) % 190) }, t);
+    }
+    window.__timelines["capa"] = tl;
+  </script>
+</template>
