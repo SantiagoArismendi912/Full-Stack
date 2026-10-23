@@ -1,3 +1,7 @@
 .hyperframes/
 node_modules/
 .media/
+vertical/.hyperframes/
+vertical/out/escenas/
+vertical/out/work-*/
+vertical/out/.*transaction*/

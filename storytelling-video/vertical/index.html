@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Jornexa · Centro de Mando — vertical sin audio</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #EDF5F5; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="105.63" data-width="1080" data-height="1920">
+    <div id="problema" data-composition-id="problema" data-composition-src="compositions/problema.html"
+         data-start="0.0" data-duration="16.49" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:1"></div>
+    <div id="jornexa" data-composition-id="jornexa" data-composition-src="compositions/jornexa.html"
+         data-start="16.04" data-duration="12.15" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:2"></div>
+    <div id="datos" data-composition-id="datos" data-composition-src="compositions/datos.html"
+         data-start="27.74" data-duration="16.67" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:3"></div>
+    <div id="contexto" data-composition-id="contexto" data-composition-src="compositions/contexto.html"
+         data-start="43.96" data-duration="17.24" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:4"></div>
+    <div id="decision" data-composition-id="decision" data-composition-src="compositions/decision.html"
+         data-start="60.75" data-duration="12.15" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:5"></div>
+    <div id="accion" data-composition-id="accion" data-composition-src="compositions/accion.html"
+         data-start="72.45" data-duration="17.52" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:6"></div>
+    <div id="cierre" data-composition-id="cierre" data-composition-src="compositions/cierre.html"
+         data-start="89.52" data-duration="16.11" data-track-index="1" data-track-kind="graphics"
+         data-width="1080" data-height="1920" style="z-index:7"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 105.63);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

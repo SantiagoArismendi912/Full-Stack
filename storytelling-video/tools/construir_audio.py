@@ -17,6 +17,9 @@ from scipy.signal import butter, lfilter
 
 modelos, salida, tiempos_json = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
 voces_externas = Path(sys.argv[sys.argv.index("--voces") + 1]) if "--voces" in sys.argv else None
+# --solo-musica <tiempos.json>: solo la música, a la medida de unos tiempos ya calculados (p. ej. para editar la voz en Google Vids).
+# Baja suavemente por escena (no por frase) para no depender de la sincronía exacta de la voz.
+solo_musica = Path(sys.argv[sys.argv.index("--solo-musica") + 1]) if "--solo-musica" in sys.argv else None
 salida.mkdir(parents=True, exist_ok=True)
 
 # Cada escena: lista de frases. Cada frase es una toma de imagen.
@@ -64,7 +67,7 @@ SOLAPE = 0.45          # fundido cruzado entre escenas
 COLA_FINAL = 3.4       # cierre sin voz, la música resuelve
 
 # ---------------- Voz ----------------
-k = None if voces_externas else Kokoro(str(modelos / "kokoro-v1.0.onnx"), str(modelos / "voices-v1.0.bin"))
+k = None if (voces_externas or solo_musica) else Kokoro(str(modelos / "kokoro-v1.0.onnx"), str(modelos / "voices-v1.0.bin"))
 
 
 def voz(nombre, i, texto):
@@ -73,22 +76,26 @@ def voz(nombre, i, texto):
         audio, sr = sf.read(voces_externas / f"voz-{nombre}-{i + 1}.wav")
         return (audio.mean(axis=1) if audio.ndim > 1 else audio), sr
     return k.create(texto, voice="ef_dora", speed=0.97, lang="es")
-escenas, cursor = [], 0.6   # 0.6 s de música sola al inicio
-for nombre, frases in GUION:
-    ini = cursor
-    t = ini + ENTRADA_ESCENA.get(nombre, ENTRADA_DEF)
-    tomas = []
-    for i, texto in enumerate(frases):
-        audio, sr = voz(nombre, i, texto)
-        audio = audio / max(1e-9, float(np.max(np.abs(audio)))) * 0.85
-        archivo = f"voz-{nombre}-{i + 1}.wav"
-        sf.write(salida / archivo, audio, sr)
-        dur = len(audio) / sr
-        tomas.append({"texto": texto, "archivo": f"assets/audio/{archivo}", "ini": round(t, 3), "dur": round(dur, 3)})
-        t += dur + GAP_FRASE
-    fin = t - GAP_FRASE + (COLA_FINAL if nombre == "cierre" else SALIDA_ESCENA)
-    escenas.append({"id": nombre, "ini": round(ini, 3), "fin": round(fin, 3), "tomas": tomas})
-    cursor = fin - SOLAPE
+if solo_musica:
+    _datos = json.loads(solo_musica.read_text(encoding="utf-8"))
+    escenas = _datos["escenas"]
+else:
+    escenas, cursor = [], 0.6   # 0.6 s de música sola al inicio
+    for nombre, frases in GUION:
+        ini = cursor
+        t = ini + ENTRADA_ESCENA.get(nombre, ENTRADA_DEF)
+        tomas = []
+        for i, texto in enumerate(frases):
+            audio, sr = voz(nombre, i, texto)
+            audio = audio / max(1e-9, float(np.max(np.abs(audio)))) * 0.85
+            archivo = f"voz-{nombre}-{i + 1}.wav"
+            sf.write(salida / archivo, audio, sr)
+            dur = len(audio) / sr
+            tomas.append({"texto": texto, "archivo": f"assets/audio/{archivo}", "ini": round(t, 3), "dur": round(dur, 3)})
+            t += dur + GAP_FRASE
+        fin = t - GAP_FRASE + (COLA_FINAL if nombre == "cierre" else SALIDA_ESCENA)
+        escenas.append({"id": nombre, "ini": round(ini, 3), "fin": round(fin, 3), "tomas": tomas})
+        cursor = fin - SOLAPE
 total = escenas[-1]["fin"]
 
 # ---------------- Música original ----------------
@@ -254,11 +261,17 @@ mezcla = base + capas["bombo"] * g_bombo * 0.95 + capas["hats"] * g_hats + capas
 
 # Bajar la música mientras habla la voz (con subida y bajada suaves)
 voz = np.zeros(N)
-for e in escenas:
-    for t in e["tomas"]:
-        voz[int((t["ini"] - 0.12) * SR): int((t["ini"] + t["dur"] + 0.25) * SR)] = 1.0
-suave = np.convolve(voz, np.ones(int(0.35 * SR)) / int(0.35 * SR), mode="same")
-mezcla *= (1 - 0.80 * suave)
+if solo_musica:   # un bloque por escena, desde su primera frase hasta la última
+    for e in escenas:
+        voz[int((e["tomas"][0]["ini"] - 0.3) * SR): int((e["tomas"][-1]["ini"] + e["tomas"][-1]["dur"] + 0.4) * SR)] = 1.0
+    ventana, profundidad = int(0.9 * SR), 0.62
+else:
+    for e in escenas:
+        for t in e["tomas"]:
+            voz[int((t["ini"] - 0.12) * SR): int((t["ini"] + t["dur"] + 0.25) * SR)] = 1.0
+    ventana, profundidad = int(0.35 * SR), 0.80
+suave = np.convolve(voz, np.ones(ventana) / ventana, mode="same")
+mezcla *= (1 - profundidad * suave)
 
 # Cierre: la música sube un poco al terminar la voz y se apaga en 2,2 s
 ultimo = escenas[-1]["tomas"][-1]
@@ -274,7 +287,8 @@ sf.write(salida / "musica.wav", mezcla.T.astype(np.float32), SR)
 subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(salida / "musica.wav"), "-codec:a", "libmp3lame", "-b:a", "192k", str(salida / "musica.mp3")], check=True)
 (salida / "musica.wav").unlink()
 
-tiempos_json.write_text(json.dumps({"total": round(total, 3), "bpm": BPM, "escenas": escenas}, ensure_ascii=False, indent=2), encoding="utf-8")
+if not solo_musica:
+    tiempos_json.write_text(json.dumps({"total": round(total, 3), "bpm": BPM, "escenas": escenas}, ensure_ascii=False, indent=2), encoding="utf-8")
 print("total", round(total, 2), "s")
 for e in escenas:
     print(e["id"], e["ini"], "→", e["fin"], [t["dur"] for t in e["tomas"]])
