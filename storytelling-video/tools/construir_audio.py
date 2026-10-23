@@ -39,7 +39,7 @@ GUION = [
     ]),
     ("decision", [
         "Y llega la decisión. El copiloto de inteligencia artificial propone y explica.",
-        "Pero la última palabra siempre la tiene una persona, que aprueba con un solo clic.",
+        "¡Y tú tienes la última palabra! Apruebas con un solo clic.",
     ]),
     ("accion", [
         "Entonces, la acción. La camioneta sale con los insumos, y el técnico llega a resolver la incidencia.",
@@ -49,7 +49,7 @@ GUION = [
     ("cierre", [
         "Jornexa.",
         "Software que entiende lo que está pasando, propone qué hacer, y deja la decisión a las personas.",
-        "Agenda tu demo con DVelaris.",
+        "¡Qué esperas! ¡Solicita tu demo!",
     ]),
 ]
 SR_VOZ = 24000
