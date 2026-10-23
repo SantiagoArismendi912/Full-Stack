@@ -4,6 +4,8 @@ import { conectarEfectos, escenaNula } from './efectos.js';
 import { crearHud } from './hud.js';
 import { GUION, crearReproductor, debeIniciarHistoria, marcarHistoriaVista } from './historia.js';
 import { crearTransporte } from './transporte.js';
+import { crearVoz } from './voz.js';
+import { subtituloEn } from './subtitulos.js';
 import { iniciarFormulario } from './formulario.js';
 
 const params = new URLSearchParams(location.search);
@@ -65,8 +67,16 @@ hud.renderizar(tienda.obtener());
 
 // ---------- Modo Historia ----------
 let transporte = null;
+// Sin voz en el modo video (grabación) ni con movimiento reducido, donde la historia avanza por actos.
+const voz = crearVoz({ almacen, deshabilitada: modoVideo || reducirMovimiento });
+const cajaSubtitulo = document.getElementById('subtitulo');
 const reproductor = crearReproductor({
-  alTiempo: (info) => transporte?.pintar(info),
+  alTiempo: (info) => {
+    transporte?.pintar(info);
+    voz.sincronizar(info);
+    const texto = info.activo && !modoVideo && !reducirMovimiento ? subtituloEn(info.t) : '';
+    if (cajaSubtitulo.textContent !== texto) { cajaSubtitulo.textContent = texto; cajaSubtitulo.hidden = !texto; }
+  },
   despachar: tienda.despachar,
   aprobar: (id, opciones) => hud.aprobarConCursor(id, opciones),
   alPaso: (paso, { rapido }) => {
