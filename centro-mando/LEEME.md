@@ -20,3 +20,15 @@ Sube la carpeta completa. El servidor debe aceptar peticiones `Range` para el au
 ## Cambiar el guion
 `historia.js` (eventos y cámara por tiempo, en ms) y `subtitulos.js` (texto por tiempo, en s). Si cambias la voz, reemplaza
 `assets/demo-audio.mp3` y ajusta esos tiempos.
+
+## Icono y anclaje (logo de Jornexa)
+Reemplaza el icono por defecto de Cloudflare: pestaña del navegador, favoritos, «Añadir a pantalla de inicio» (iOS y Android).
+- **Método:** los recursos de marca viven en `https://recursos.dvelaris.com/` (bucket R2 `jornexa-recursos`) y la página los
+  enlaza por URL, sin copiarlos al repositorio. Icono actual: `jornexa-opcion-3-turquesa-192.png`.
+- En el `<head>` de `index.html`: `rel="icon"` (192 px), `rel="apple-touch-icon"`, `rel="manifest"` y `theme-color` `#072E73`.
+- `manifest.webmanifest`: nombre, nombre corto «Jornexa», colores de marca y el icono.
+- **Cambiar el logo:** sube un archivo nuevo al bucket (mejor con nombre nuevo, no reemplazar el anterior) y cambia la URL en
+  `index.html` y en `manifest.webmanifest`.
+- **Pendientes opcionales:** versión de 512 px (para instalar como app) y una imagen de 1200×630 para la vista previa al compartir
+  el enlace en LinkedIn (`og:image`).
+- Los navegadores guardan los iconos en caché: para ver el cambio, recarga con Ctrl+F5 o abre una ventana de incógnito.
