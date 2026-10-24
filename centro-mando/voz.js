@@ -56,6 +56,7 @@ export function crearVoz({ almacen = null, deshabilitada = false } = {}) {
   if (deshabilitada) boton.hidden = true;
 
   return {
+    conVoz: () => !silencio && !bloqueado && !deshabilitada,   // la persona está oyendo la voz (no silenciada ni bloqueada)
     // Se llama en cada cuadro con el estado del reproductor: {t (ms), pausado, velocidad, activo}
     sincronizar({ t, pausado, velocidad, activo }) {
       if (deshabilitada) return;

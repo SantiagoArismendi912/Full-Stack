@@ -70,12 +70,54 @@ let transporte = null;
 // Sin voz en el modo video (grabación) ni con movimiento reducido, donde la historia avanza por actos.
 const voz = crearVoz({ almacen, deshabilitada: modoVideo || reducirMovimiento });
 const cajaSubtitulo = document.getElementById('subtitulo');
+
+// Subtítulos (botón CC): sin preferencia, en celular solo se ven si la voz está silenciada o bloqueada;
+// en escritorio siempre. Un toque en CC fija la preferencia (se recuerda).
+const CLAVE_CC = 'jornexa-centro-mando-cc';
+let prefCC = null;
+try { prefCC = almacen?.getItem(CLAVE_CC); } catch { prefCC = null; }
+const esCelular = () => matchMedia('(max-width: 767px)').matches;
+const botonCC = document.getElementById('trCC');
+if (modoVideo || reducirMovimiento) botonCC.hidden = true;
+const ccVisible = () => (prefCC === 'on' ? true : prefCC === 'off' ? false : esCelular() ? !voz.conVoz() : true);
+let ultimoCC = null;
+function pintarCC() {
+  const v = ccVisible();
+  if (v === ultimoCC) return;
+  ultimoCC = v;
+  botonCC.setAttribute('aria-pressed', String(v));
+  botonCC.classList.toggle('apagado', !v);
+}
+let ultimaInfo = null;
+function pintarSubtitulo() {
+  pintarCC();
+  const texto = ultimaInfo?.activo && !modoVideo && !reducirMovimiento && ccVisible() ? subtituloEn(ultimaInfo.t) : '';
+  if (cajaSubtitulo.textContent !== texto) { cajaSubtitulo.textContent = texto; cajaSubtitulo.hidden = !texto; }
+}
+// El primer toque en la página desbloquea el audio y apaga los subtítulos automáticos antes de que llegue el «click»:
+// se recuerda lo que se veía al pulsar para que CC haga lo que la persona espera.
+let vistoAlPulsar = null;
+botonCC.addEventListener('pointerdown', () => { vistoAlPulsar = ultimoCC; });
+botonCC.addEventListener('click', () => {
+  prefCC = (vistoAlPulsar ?? ultimoCC) ? 'off' : 'on';
+  vistoAlPulsar = null;
+  try { almacen?.setItem(CLAVE_CC, prefCC); } catch { /* sin almacenamiento */ }
+  pintarSubtitulo(); // también con la historia en pausa
+});
+
+// Copiloto plegable en celular: un toque en el encabezado lo abre o lo cierra.
+const panelCopiloto = document.getElementById('copiloto');
+panelCopiloto.querySelector('header').addEventListener('click', () => {
+  if (!esCelular()) return;
+  const abierto = panelCopiloto.classList.toggle('abierto');
+  document.body.classList.toggle('copiloto-abierto', abierto);
+});
 const reproductor = crearReproductor({
   alTiempo: (info) => {
     transporte?.pintar(info);
     voz.sincronizar(info);
-    const texto = info.activo && !modoVideo && !reducirMovimiento ? subtituloEn(info.t) : '';
-    if (cajaSubtitulo.textContent !== texto) { cajaSubtitulo.textContent = texto; cajaSubtitulo.hidden = !texto; }
+    ultimaInfo = info;
+    pintarSubtitulo();
   },
   despachar: tienda.despachar,
   aprobar: (id, opciones) => hud.aprobarConCursor(id, opciones),

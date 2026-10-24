@@ -254,7 +254,7 @@ export function crearHud({ tienda, obtenerEscena, alCambiarModo = () => {} }) {
     el.classList.add('oculto');
     rotuloTimer = setTimeout(() => {
       const [titulo, ...resto] = String(texto).split(' · ');
-      el.innerHTML = `<span>${acto ? `${acto} · ` : ''}${esc(titulo)}</span>${esc(resto.join(' · '))}`;
+      el.innerHTML = `<span>${acto ? `<span class="n">${acto} · </span>` : ''}${esc(titulo)}</span><em class="resto">${esc(resto.join(' · '))}</em>`;
       el.classList.remove('oculto');
     }, 250);
   }
